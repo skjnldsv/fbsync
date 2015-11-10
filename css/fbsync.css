@@ -1,0 +1,177 @@
+/* ---- FONT ---- */
+@import url("../fonts/foundation-icons.css");
+
+
+/* ---- VARIOUS STUFF ---- */
+.clear::after {
+	content: '';
+	clear: both;
+}
+ul {
+	list-style: circle;
+	padding-left: 20px;
+}
+
+/* ---- TITLES ---- */
+h1 {
+	font-size: 16px;
+}
+h2 {
+	font-size: 14px;
+}
+h3 {
+	font-size: 12px;
+	text-decoration: underline;
+}
+
+/* ---- CONTROLS ---- */
+.button > a {
+	font-weight: normal;
+}
+.controls-left {
+	float: left;
+}
+.controls-right {
+	float: right;
+}
+.controls-right > div {
+	display: inline-block !important;
+}
+
+/* ---- CONTENT ---- */
+#app-content {
+/*	padding-top: 20px;*/
+}
+#main_error {
+	margin: 100px;
+	text-align: center;
+}
+.main-app-content {
+	padding: 20px;
+}
+
+/* ---- CONTACTS LIST ---- */
+#contacts-list {
+	padding-top: 40px;
+}
+.localcontact {
+    float: left;
+    width: 250px;
+    margin: 10px;
+    border: 1px solid #808080;
+    padding: 10px;
+	height: 62px;
+	border-radius: 3px;
+	opacity: 0.5;
+}
+.localcontact.nofbid {
+	opacity: 1;
+}
+.localcontact .name {
+    max-width: 170px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+.localcontact .photo {
+    display: block;
+    height: 40px;
+    width: 40px;
+    float: left;
+    border-radius: 20px;
+    margin-right: 10px;
+	background-repeat: no-repeat;
+	background-color: #CCC;
+	background-position: center center;
+    background-size: contain;
+}
+.localcontact .photo.nophoto {
+    background-image: url('../img/contact.svg');
+}
+.localcontact .selectspan {
+	display: inline-block;
+    width: 10px;
+}
+.localcontact select {
+    height: 20px;
+    padding: 0;
+    margin: 0px;
+    max-width: 170px;
+    width: 170px;
+/*    margin-left: 8px;*/
+}
+.sync-contact {
+	display: inline-block;
+	margin: 10px;
+}
+#syncsuccess, #syncerror {
+	padding: 20px;
+}
+
+/* ---- LOADER (@github.com/tobiasahlin/SpinKit) ---- */
+#loader {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	background: #FFF;
+    z-index: 40;
+}
+#loading-status {
+    text-align: center;
+/*    font-variant: small-caps;*/
+    font-size: 15px;
+    font-style: italic;
+	color: #565656;
+}
+.spinner {
+	margin: 100px auto 30px;
+	width: 50px;
+	height: 40px;
+	text-align: center;
+	font-size: 10px;
+}
+
+.spinner > div {
+	background-color: #3b5998; /* FB color */
+	height: 100%;
+	width: 6px;
+	display: inline-block;
+	-webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+	animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+	-webkit-animation-delay: -1.1s;
+	animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+	-webkit-animation-delay: -1.0s;
+	animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+	-webkit-animation-delay: -0.9s;
+	animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+	0%, 40%, 100% { -webkit-transform: scaleY(0.4) }	
+	20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+	0%, 40%, 100% { 
+		transform: scaleY(0.4);
+		-webkit-transform: scaleY(0.4);
+	}
+	20% { 
+		transform: scaleY(1.0);
+		-webkit-transform: scaleY(1.0);
+	}
+}
