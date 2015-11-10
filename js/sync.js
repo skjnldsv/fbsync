@@ -38,7 +38,7 @@ function syncPictures() {
 					$.ajax({ 
 						url: url,
 						type: 'POST',
-						data: {x:"0", y:"0", w:"400", h:"400"}
+						data: {x:"0", y:"0", w:response['w'], h:response['h']}
 					}).done(function(response) {
 						synced++;
 						contact=localcontactsIDs[response['data']['id']];

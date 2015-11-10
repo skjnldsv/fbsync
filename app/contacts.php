@@ -118,6 +118,10 @@ class Contacts {
 					"contactId" => $contactID,);
 			}
 			
+			$max_size=TemporaryPhoto::MAX_SIZE;
+			$height=$image->height()>$max_size?$max_size:$image->height();
+			$width=$image->width()>$max_size?$max_size:$image->width();
+			
 			$key = uniqid('photo-');
 			$this->cache->set($key, $image->data(), 600);
 
@@ -125,7 +129,9 @@ class Contacts {
 				"backend" => $backend,
 				"addressBookId" => $addressbook,
 				"contactId" => $contactID,
-				"cachedImage" => $key
+				"cachedImage" => $key,
+				"h" => $height,
+				"w" => $width
 			);
 		}
 		return false;
