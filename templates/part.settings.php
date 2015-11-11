@@ -6,7 +6,7 @@
 	</div>
 	<div id="app-settings-content">
 		<i>Credentials</i><br>
-		<input type="text" id="fbemail" placeholder="User" value="<?php print_unescaped($_['fbuser']) ?>" /><br>
+		<input type="text" id="fbemail" placeholder="User" /><br>
 		<input type="password" id="fbpass" placeholder="Password" /><input type="button" value="Login" id="fblogin" />
 	</div>
 </div>

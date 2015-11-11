@@ -10,6 +10,7 @@
 ul {
 	list-style: circle;
 	padding-left: 20px;
+	margin-left: 10px;
 }
 
 /* ---- TITLES ---- */
@@ -20,8 +21,8 @@ h2 {
 	font-size: 14px;
 }
 h3 {
-	font-size: 12px;
 	text-decoration: underline;
+	font-weight: bold;
 }
 
 /* ---- CONTROLS ---- */
@@ -49,7 +50,10 @@ h3 {
 .main-app-content {
 	padding: 20px;
 }
-
+.main-app-intro {
+	padding-left: 10px;
+	margin-bottom: 10px;
+}
 /* ---- CONTACTS LIST ---- */
 #contacts-list {
 	padding-top: 40px;

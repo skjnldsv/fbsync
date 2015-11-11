@@ -1,11 +1,7 @@
-## URGENT
-- Store safely the cookie in db
+# URGENT
 - Fix bugs
 - Find workaround for friends who have disabled the graph api
 
-## Secondary
+# Secondary
 - Auto sync (cron)
 - Detach from javascript and go full php
-
-## Ideas
-- Search for people not in the friends list

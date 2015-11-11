@@ -48,6 +48,8 @@ function syncPictures() {
 						);
 						$('#syncstatus').text(synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+")");
 						$('#syncsuccess').append('<div class="sync-contact tooltipped" title="'+contact[2]+'"><img src="'+url+'" /></div>');
+						// Tooltips
+						$('.tooltipped').tipsy()
 					}).fail(function() {
 						error++;
 						contact=localcontactsIDs[response['data']['id']];
@@ -116,6 +118,7 @@ function syncPictures() {
 //----------  BUTTONS ----------	
 		// Toggle matched button
 		$("#syncall").click(function() {
+			$("#syncall").remove();
 			syncPictures();
 		})
 		
