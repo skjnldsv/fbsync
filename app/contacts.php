@@ -12,7 +12,6 @@
 namespace OCA\FbSync\App;
 
 use \OCP\Contacts\IManager;
-use \OCP\Files\IRootFolder;
 use \OCA\FbSync\Controller\ContactsController;
 use \OCA\Contacts\Utils\TemporaryPhoto;
 use \OCP\ICache;
@@ -23,40 +22,18 @@ use \OCP\Image;
  * @package OCA\FbSync\App
  */
 class Contacts {
-	const APP=1;
-	const INTEGRATED=2;
 	/**
 	 * @var array used to cache the parsed contacts for every request
 	 */
 	private static $contacts;
 	/**
-	 * @var array used to cache the parsed initConvs for every request
-	 */
-	private static $initConvs;
-	/**
 	 * @var IManager
 	 */
 	private $contactsManager;
-	/**
-	 * @var IRootFolder
-	 */
-	private $rootFolder;
-	public $viewType;
     
-	public function __construct(IManager $contactsManager, IRootFolder $rootFolder, ICache $cache) {
+	public function __construct(IManager $contactsManager, ICache $cache) {
 		$this->contactsManager = $contactsManager;
-		$this->rootFolder = $rootFolder;
-		$this->setViewType();
 		$this->cache = $cache;
-	}
-    
-	private function setViewType(){
-		$requestUri = \OCP\Util::getRequestUri();
-		if(substr($requestUri, -5) === 'chat/'){
-			$this->viewType = self::APP;
-		} else {
-			$this->viewType = self::INTEGRATED;
-		}
 	}
     
 	/**

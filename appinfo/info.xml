@@ -8,7 +8,11 @@
     <version>0.1.7-alpha</version>
     <namespace>FbSync</namespace>
     <category>other</category>
-    <dependencies>
-        <owncloud min-version="8.1" />
-    </dependencies>
+    <require>8</require>
+	<dependencies>
+		<owncloud min-version="8.1" max-version="8.2" />
+	</dependencies>
+	<documentation>
+		<user>https://github.com/skjnldsv/Owncloud-FBSync</user>
+	</documentation>
 </info>

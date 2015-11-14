@@ -3,24 +3,24 @@
 
 
 /* ---- VARIOUS STUFF ---- */
-.clear::after {
+.fbsync .clear::after {
 	content: '';
 	clear: both;
 }
-ul {
+.fbsync ul {
 	list-style: circle;
 	padding-left: 20px;
 	margin-left: 10px;
 }
 
 /* ---- TITLES ---- */
-h1 {
+.fbsync h1 {
 	font-size: 16px;
 }
-h2 {
+.fbsync h2 {
 	font-size: 14px;
 }
-h3 {
+.fbsync h3 {
 	text-decoration: underline;
 	font-weight: bold;
 }

@@ -1,3 +1,6 @@
+0.1.8-alpha:
+ - Fixed some css
+
 0.1.7-alpha:
  - Home text edit
  - Tooltips in sync section

@@ -41,7 +41,6 @@ if(\OCP\App::isEnabled('contacts')) {
     $container->registerService('Contacts', function($c) {
         return new Contacts(
             $c->query('OCP\Contacts\IManager'),
-            $c->query('OCP\Files\IRootFolder'),
             $c->query('OCP\ICache')
         );
     });
