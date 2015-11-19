@@ -26,9 +26,10 @@ style('fbsync', 'fbsync');
 			Hi there! Welcome to the facebook profile picture sync application.
 			<br />
 			<br />
-			Don't forget this app is in early stages.
+			Warning! When using the "match similar names" function, <b>remember to check the matched contacts for errors.</b><br />
+			A lot of contacts can have an incorrect match. Especially if you got a lot of them!
 			<br />
-			Please make sure to have backups of your contacts before running a sync.
+			<b>Please make sure to have backups of your contacts before running a sync.</b>
 			<br /><br /><br />
 			How this works:
 			<ul>
