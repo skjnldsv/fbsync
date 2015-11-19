@@ -1,5 +1,5 @@
 /* ---- FONT ---- */
-@import url("../fonts/foundation-icons.css");
+@import url("../fonts/font-awesome.min.css");
 
 
 /* ---- VARIOUS STUFF ---- */
@@ -38,6 +38,9 @@
 .controls-right > div {
 	display: inline-block !important;
 }
+#controls .loading {
+	padding-right: 33px;
+}
 
 /* ---- CONTENT ---- */
 #app-content {
@@ -67,8 +70,9 @@
 	height: 62px;
 	border-radius: 3px;
 	opacity: 0.5;
+	transition: 300ms ease-in-out;
 }
-.localcontact.nofbid {
+.localcontact.nofbid, .localcontact:hover {
 	opacity: 1;
 }
 .localcontact .name {
@@ -88,8 +92,7 @@
 	background-color: #CCC;
 	background-position: center center;
     background-size: contain;
-}
-.localcontact .photo.nophoto {
+	overflow: hidden;
     background-image: url('../img/contact.svg');
 }
 .localcontact .selectspan {

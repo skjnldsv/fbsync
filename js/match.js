@@ -1,66 +1,24 @@
+/**
+ * ownCloud - fbsync
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author NOIJN <fremulon@protonmail.com>
+ * @copyright NOIJN 2015
+ */
 
-var localcontacts = Array();
-var fbcontacts = Array();
 var fbcontactsNames = Array();
-var loading=0;
 var matched=0;
 var syncing=false;
 var synced=0;
 var syncederror=0;
 
-// Loading status manager
-function loaded() {
-	if(loading==1){
-		$('#loading-status').text('Local contacts loaded! Loading facebook friends...');
-	}
-	if(loading==2){
-		$('#loading-status').text('Facebook friends loaded! Loading local contacts...');
-	}
-	if(loading==3){
-		$('#loading-status').text('Initializing data...');
-		initSelects();
-	}
-	if(loading==6){
-		$("#loader").remove();
-		$('#contacts-list').fadeIn();
-
-		// Watch select changes
-		$(".fbselect").change(function() {
-			// Update classes
-			var bookid=$(this).parent().data('bookid');
-			var id=$(this).parent().data('id');
-			var name=$(this).parent().find('.name').text();
-			
-			$(this).prop('disabled', true);
-			
-			if($(this).val()!="false") {
-				$(this).parent().removeClass('nofbid');
-				updateFBID(bookid, id, $(this).val(), function() {
-					// $this won't work here
-					$('[data-id="'+id+'"] select').removeProp('disabled');
-					reloadMatched();
-				}, function() {
-					alert("Error saving "+name+" data !");
-				});
-			} else {
-				$(this).parent().addClass('nofbid');
-				updateFBID(bookid, id, null, function() {
-					$('[data-id="'+id+'"] select').removeProp('disabled');
-					reloadMatched();
-				}, function() {
-					alert("Error saving "+name+" data !")
-				});
-			}
-			// Update data
-		});
-	}
-}
-
-function updateFBID(addressbook, contact, fbid, success, error) {
+function updateFBID(contact, fbid, success, error) {
 	$.ajax({ 
-		url: OC.generateUrl('apps/contacts/addressbook/local/'+addressbook+'/contact/'+contact),
-		type: 'PATCH',
-		data: {"name":"FBID","value":fbid,"parameters":{}}
+		url: OC.generateUrl('apps/fbsync/contact/fbid/'+contact),
+		type: 'POST',
+		data: {"fbid":fbid}
 	}).done(function() {
 		success();
 		return true;
@@ -73,59 +31,53 @@ function updateFBID(addressbook, contact, fbid, success, error) {
 
 // Match all contacts with exact Name
 function perfectMatch() {
-	var count=0;
-	syncing=true;
-	synced=0;
-	$("#perfectmatch").prop('disabled',true);
-	fbcontactsNames.forEach(function(friend, index, array){
-		var re = /(.*)-([0-9]{0,20})/; 
-		var matches = re.exec(friend);
-		var name=matches[1]
-		var fbid=matches[2];
-		if($('[data-name="'+name+'"]').length) {
-			count+=$('[data-name="'+name+'"]').length;
-			$('[data-name="'+name+'"]').removeClass('nofbid').find('select > option[value='+fbid+']').prop('selected',true);
-			var bookid=$('[data-name="'+name+'"]').data('bookid');
-			var id=$('[data-name="'+name+'"]').data('id');
-			// Saving DATA
-			updateFBID(bookid, id, fbid, function(){
-				synced++;
-				reloadSync(count);
-			}, function(){
-				syncederror++;
-				reloadSync(count);
-				alert("Error saving "+name+" data !")
-			});
-		}
-	})
+	$("#perfectmatch").text('Matching...').prop('disabled',true).addClass('loading');
+	$.ajax({ 
+		url: OC.generateUrl('apps/fbsync/perfectmatch'),
+		type: 'GET'
+	}).done(function(response) {
+		$("#perfectmatch").text(response+' contacts updated [refresh in 3s]');
+		// Reload
+		setTimeout(function() {document.location.reload()},3000);
+		return true;
+	}).fail(function(response) {
+		console.log(response);
+		return false;
+	});
 }
 
-function initSelects() {
-	var options="";
-	// Sort array
-	fbcontactsNames.sort();
-	// Create options
-	fbcontactsNames.forEach(function(friend, index, array){
-		var re = /(.*)-([0-9]{0,20})/; 
-		var matches = re.exec(friend);
-		var name=matches[1]
-		var fbid=matches[2];
-		options+='<option value="'+fbid+'">'+name+'</option>';
-	})
-	// Append all contacts
-	$(".fbselect").each(function() {
-		$(this).append(options);
-	})
-	// Select matched contacts
-	$('.localcontact:not(.nofbid)').each(function() {
-		var fbid=$(this).data('fbid');
-		$(this).find('select > option[value='+fbid+']').prop('selected',true);
-		matched++;
-	})
-	loading+=3;
-	loaded();
-	reloadMatched();
-	
+
+// Match all contacts with exact Name
+function approxMatch() {
+	$("#approxmatch").text('Matching...').prop('disabled',true).addClass('loading');
+	$.ajax({ 
+		url: OC.generateUrl('apps/fbsync/approxmatch'),
+		type: 'GET'
+	}).done(function(response) {
+		$("#approxmatch").text(response+' contacts updated [refresh in 3s]');
+		// Reload
+		setTimeout(function() {document.location.reload()},3000);
+		return true;
+	}).fail(function(response) {
+		console.log(response);
+		return false;
+	});
+}
+
+function reloadCache() {
+	$("#fbstatus").text('Loading...').prop('disabled',true).addClass('loading');
+	$.ajax({ 
+		url: OC.generateUrl('apps/fbsync/facebook/reloadfriends'),
+		type: 'GET'
+	}).done(function(response) {
+		$("#fbstatus").text(response+' friends found [refresh in 3s]');
+		// Reload
+		setTimeout(function() {document.location.reload()},3000);
+		return true;
+	}).fail(function(response) {
+		console.log(response);
+		return false;
+	});
 }
 
 function reloadSync(total) {
@@ -133,7 +85,7 @@ function reloadSync(total) {
 	if(syncederror>0) {
 		text+=" ("+syncederror+" error(s))";
 	}
-	$('#syncstatus').fadeIn().text(text);
+	$('#syncstatus').text(text);
 	if(synced+syncederror == total) {
 		reloadMatched();
 		$("#perfectmatch").removeProp('disabled');
@@ -143,17 +95,28 @@ function reloadSync(total) {
 function reloadMatched() {
 	var matched=$('.localcontact:not(.nofbid)').length;
 	var contacts=$('.localcontact').length;
-	var friends=fbcontactsNames.length;
-	$('#syncstatus').fadeIn().text(Math.round(matched/contacts*100)+'% of '+contacts+' matched with '+Math.round(matched/friends*100)+'% ('+matched+') of your Facebook friends')
+	var friends=$('#contacts-list').data('friends');
+	$('#syncstatus').text(Math.round(matched/contacts*100)+'% of '+contacts+' matched with '+Math.round(matched/friends*100)+'% ('+matched+') of your Facebook friends')
 }
+
+
+function sortA(a,b){  
+	return $(a).data("name") > $(b).data("name") ? 1 : -1;  
+};
+
+function sortT(a,b){  
+	return $(a).data("time") > $(b).data("time") ? 1 : -1;  
+};
+
 
 (function ($, OC) {
     
 	$(document).ready(function () {
 		
-		// Better visual
-		$('#contacts-list').fadeOut();
+		$('.tooltipped-top').tipsy({gravity: 's'});
+		$('.tooltipped-bottom').tipsy({gravity: 'n'});
 		
+//----------  RESIZE ----------				
 		// Hack to resize auto #controls (/core/js/js.js:1435)
 		if($('#controls').length) {
 			var controlsWidth;
@@ -179,74 +142,8 @@ function reloadMatched() {
 			}
 			$('#controls').css('width', controlsWidth);
 			$('#controls').css('min-width', controlsWidth);
+
 		}
-		
-//----------  LOCAL CONTACTS ----------
-        var url1 = OC.generateUrl('apps/fbsync/contacts')
-        $.getJSON(url1).done(function (response) {
-			localcontacts=response;
-			// If no addressbook selected, only the OC user appear
-			if(localcontacts.length == 1) {
-				$('#loading-status').text("No contacts found.");
-				$('#syncstatus').text('Error!')
-				$('#contacts-list').append('<div id="main_error"><h1>No contacts found. Did you hide all the addressbooks?</h1><div>');
-				loading+=6;
-				loaded();
-			} else {
-				localcontacts.forEach(function(contact, index, array){
-					// Prevent contacts without addressbook
-					var addressbook = contact['addressbook-key'].split(':')[1];
-					if(addressbook != undefined) {
-						var result='<div data-id="'+contact['id']+'" data-bookid="'+addressbook+'" data-name="'+contact['FN']+'" class="localcontact';
-						// Photo or default picture
-						if(contact['FBID']) {
-							fbid=contact['FBID']
-							result+='" data-fbid="'+fbid+'">';
-						} else {
-							result+=' nofbid">';
-						}
-						result+='<div class="photo';
-						// Photo or default picture
-						if(contact['photo']) {
-							photo=contact['PHOTO'].split('uri:')[1];
-							result+='" style="background-image:url(\''+photo+'\')">';
-						} else {
-							result+=' nophoto">';
-						}
-						result+='</div>';
-						result+='<span class="name">';
-						result+=contact['FN'];
-						result+='</span>';
-		//				result+='<br /><span class="fi-arrow-right selectspan"></span><select><option>Choisir</option></select>';
-						result+='<select class="fbselect"><option value="false">Choose friend</option></select>';
-						result+='</div>';
-						$('#contacts-list').append(result);
-					}
-				});
-				loading+=1;
-				loaded();
-			}
-        }).fail(function() {
-			$('#loading-status').text("Error loading local contacts.");
-		});
-		
-//----------  FACEBOOK FRIENDS ----------
-        url2 = OC.generateUrl('apps/fbsync/facebook/friends')
-        $.getJSON(url2).done(function (response) {
-			var friendscount=0;
-			$.each($.parseJSON(response[1]), function (i,v) {
-				fbcontacts[fbcontacts.length]=Array();
-				fbcontacts[fbcontacts.length-1][i]=v;
-				fbcontacts[fbcontacts.length-1][v]=i;
-				fbcontactsNames.push(v+"-"+i);
-			});
-			$('#fbstatus').text(fbcontacts.length+" facebook contacts loaded");
-			loading+=2;
-			loaded();
-        }).fail(function() {
-			$('#fbstatus').text("Error!");
-			$('#loading-status').text("Error loading facebook friends. Are you connected?");
-		});
 	
 //----------  BUTTONS ----------	
 		// Toggle matched button
@@ -259,7 +156,56 @@ function reloadMatched() {
 		$("#perfectmatch").click(function() {
 			perfectMatch();
 		})
+		
+		// PerfectMatch button
+		$("#approxmatch").click(function() {
+			approxMatch();
+		})
+		
+		// reloadCache button
+		$("#fbstatus").click(function() {
+			reloadCache();
+		})
+		
+		// sort Alpha
+		$("#sortA").click(function() {
+			$(".localcontact").sort(sortA).appendTo($("#contacts-list"));
+		})
+		
+		// sort Time
+		$("#sortT").click(function() {
+			$(".localcontact").sort(sortT).appendTo($("#contacts-list"));
+		})
 	
+		$(".fbselect").change(function() {
+			// Update classes
+			var id=$(this).parent().data('id');
+			var name=$(this).parent().find('.name').text();
+			
+			$(this).prop('disabled', true);
+			
+			if($(this).val()!="false") {
+				$(this).parent().removeClass('nofbid');
+				updateFBID(id, $(this).val(), function() {
+					// $this won't work here
+					$('[data-id="'+id+'"] select').removeProp('disabled');
+					reloadMatched();
+				}, function() {
+					alert("Error saving "+name+" data !");
+				});
+			} else {
+				$(this).parent().addClass('nofbid');
+				updateFBID(id, null, function() {
+					$('[data-id="'+id+'"] select').removeProp('disabled');
+					reloadMatched();
+				}, function() {
+					alert("Error saving "+name+" data !")
+				});
+			}
+		});
+		
+//----------  INIT STATS ----------			
+		reloadMatched()
 		
 	});
 

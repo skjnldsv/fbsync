@@ -1,3 +1,13 @@
+/**
+ * ownCloud - fbsync
+ *
+ * This file is licensed under the Affero General Public License version 3 or
+ * later. See the COPYING file.
+ *
+ * @author NOIJN <fremulon@protonmail.com>
+ * @copyright NOIJN 2015
+ */
+
 function logvalid() {
     jQuery('#app-settings-content #fblogin').css({'background-color':'#A1B56C','color':'white'});
 }

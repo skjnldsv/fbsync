@@ -9,14 +9,6 @@
  * @copyright NOIJN 2015
  */
 
-/**
- * Create your routes in here. The name is the lowercase name of the controller
- * without the controller part, the stuff after the hash is the method.
- * e.g. page#index -> OCA\FbSync\Controller\PageController->index()
- *
- * The controller class has to be registered in the application.php file since
- * it's instantiated in there
- */
 return [
     'routes' => [
 	   ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
@@ -25,8 +17,11 @@ return [
 	   ['name' => 'page#sync', 'url' => '/sync', 'verb' => 'GET'],
 	   ['name' => 'facebook#login', 'url' => '/facebook/login', 'verb' => 'POST'],
 	   ['name' => 'facebook#friends', 'url' => '/facebook/friends', 'verb' => 'GET'],
-	   ['name' => 'contacts#contacts', 'url' => '/contacts', 'verb' => 'GET'],
-	   ['name' => 'contacts#getcontact', 'url' => '/contact/{id}', 'verb' => 'GET'],
-	   ['name' => 'contacts#setPhoto', 'url' => '/setphoto/{id}', 'verb' => 'POST'],
+	   ['name' => 'facebook#reload', 'url' => '/facebook/reloadfriends', 'verb' => 'GET'],
+	   ['name' => 'contacts#perfectMatch', 'url' => '/perfectmatch', 'verb' => 'GET'],
+	   ['name' => 'contacts#approxMatch', 'url' => '/approxmatch', 'verb' => 'GET'],
+	   ['name' => 'contacts#updateFBID', 'url' => '/contact/fbid/{id}', 'verb' => 'POST'],
+	   ['name' => 'contacts#setPhoto', 'url' => '/setphoto/{id}', 'verb' => 'GET'],
+	   ['name' => 'contacts#getFbContacts', 'url' => '/FBcontacts', 'verb' => 'GET'],
     ]
 ];

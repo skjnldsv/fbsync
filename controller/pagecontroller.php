@@ -11,19 +11,22 @@
 
 namespace OCA\FbSync\Controller;
 
-use OCP\IRequest;
-use OCP\AppFramework\Http\TemplateResponse;
-use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Controller;
+use \OCP\IRequest;
+use \OCP\AppFramework\Http\TemplateResponse;
+use \OCP\AppFramework\Controller;
+use \OCP\AppFramework\App;
+use \OCA\FbSync\App\Contacts;
+use \OCA\FbSync\Controller\FacebookController;
 
 
 class PageController extends Controller {
 
-	private $userId;
+	private $app;
 
-	public function __construct($AppName, IRequest $request, $UserId){
+	public function __construct($AppName, IRequest $request, Contacts $contacts, FacebookController $facebook){
 		parent::__construct($AppName, $request);
-		$this->userId = $UserId;
+		$this->contacts = $contacts;
+		$this->facebook = $facebook;
 	}
 
 	/**
@@ -39,7 +42,7 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index() {
-		$params = ['user' => $this->userId];
+		$params = [];
 		return new TemplateResponse('fbsync', 'status', $params);  // templates/status.php
 	}
 
@@ -47,7 +50,7 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function match() {
-		$params = ['user' => $this->userId];
+		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
 		return new TemplateResponse('fbsync', 'match', $params);  // templates/match.php
 	}
     
@@ -55,7 +58,7 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function sync() {
-		$params = ['user' => $this->userId];
+		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
 		return new TemplateResponse('fbsync', 'sync', $params);  // templates/sync.php
 	}
 

@@ -5,12 +5,12 @@
     <description>A Facebook info sync for owncloud contacts</description>
     <licence>AGPL</licence>
     <author>NOIJN</author>
-    <version>0.1.7-alpha</version>
+    <version>1.1.0</version>
     <namespace>FbSync</namespace>
     <category>other</category>
     <require>8</require>
 	<dependencies>
-		<owncloud min-version="8.1" max-version="8.2" />
+		<owncloud min-version="8.1" max-version="8.2.1" />
 	</dependencies>
 	<documentation>
 		<user>https://github.com/skjnldsv/Owncloud-FBSync</user>

@@ -1,7 +1,7 @@
 ## URGENT
-- Fix bugs
-- Find workaround for friends who have disabled the graph api
+- Fix user home bug
 
 ## Secondary
 - Auto sync (cron)
-- Detach from javascript and go full php
+- Add facebook login status
+- Get birthdays

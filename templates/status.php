@@ -46,13 +46,8 @@ style('fbsync', 'fbsync');
 			So because I love owncloud, I decided to work on a sync app.<br />
 			I figured out how to retrieve the facebook data by using the mobile website and a cookie auth (which isn't secure for now, because the cookie is stored in plain text on the owncloud root! :O)
 			<br /><br />
-			I'm a dev who has been working on many arch and MVC. To be fair, I can't handle the OC MVC system.<br />
-			I can't find the logic in the way it is built. Maybe it will come later! ;)<br />
-			<br />
-			Meanwhile, I NEED YOU HELP! Please help me improving this app! I would gladly work on it for fun! I need help and will happily accept pull request and discussions on <a href="https://github.com/skjnldsv/Owncloud-FBSync"><h3>the github page</h3></a>
-			So if you know Owncloud dev better than I do (which won't be to hard considering I can't figure out the logic behind the OC architecture)<br />
-			<br />
-			PLEASE help! There's a lot to do with this app. Thanks a lot!!
+			Please HELP! Fill an issue for any bugs found. I will happilly work to improve this app on my free time!<br />
+			<a href="https://github.com/skjnldsv/Owncloud-FBSync"><h3>Github</h3></a>
 		</div>
 	</div>
 </div>

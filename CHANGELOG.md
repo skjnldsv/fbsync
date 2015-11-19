@@ -1,10 +1,25 @@
-0.1.8-alpha:
+1.1.0:
+ - Workaround for friends who have disabled the graph API
+ - Second auto match system using the Jaro-Winkler algorithm
+ - Various bug fixes
+ 
+ 1.0.0:
+ - More secure location for cookie (fixed #2)
+ - Massive Cleanup
+ - Fixed and improved login system
+ - Facebook friends now cached (better performances)
+ - Reorganized classes
+ - No more javascript data loading for the match section
+ - Sort contacts
+ 
+ 0.1.8-alpha:
  - Fixed some css
+ - Cleanup
 
 0.1.7-alpha:
  - Home text edit
  - Tooltips in sync section
- - Removed unused fbuser var from part.settings
+ - Removed unused fbuser var from part.settings (fixed #1)
 
 0.1.6-alpha:
  - Home text edit

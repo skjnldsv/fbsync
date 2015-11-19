@@ -11,11 +11,12 @@
 
 namespace OCA\FbSync\App;
 
-use \OCP\Contacts\IManager;
-use \OCA\FbSync\Controller\ContactsController;
-use \OCA\Contacts\Utils\TemporaryPhoto;
-use \OCP\ICache;
-use \OCP\Image;
+use \OCA\FbSync\App\Contact;
+use \OCA\FbSync\Controller\FacebookController;
+use \OCA\FbSync\VCard;
+use \OCA\FbSync\Addressbook;
+use Sabre\VObject;
+use OCA\FbSync\AppInfo\Application as App;
 
 /**
  * Class Contacts
@@ -23,94 +24,179 @@ use \OCP\Image;
  */
 class Contacts {
 	/**
-	 * @var array used to cache the parsed contacts for every request
+	 * @var FacebookController
 	 */
-	private static $contacts;
-	/**
-	 * @var IManager
-	 */
-	private $contactsManager;
+	private $fbController;
     
-	public function __construct(IManager $contactsManager, ICache $cache) {
-		$this->contactsManager = $contactsManager;
-		$this->cache = $cache;
+	public function __construct(FacebookController $fbController) {
+		$this->fbController = $fbController;
+	}
+	
+	/**
+	* Sort Contact item by Name
+	*/
+	private function sortContacts(Contact $a, Contact $b) {
+		return strcasecmp($a->getName(), $b->getName());
 	}
     
 	/**
 	 * Retrieves all contacts from the ContactsManager and parse them to a
 	 * usable format.
-	 * @return array Returns array with contacts, contacts as a list and
-	 * contacts as an associative array
 	 */
-	public function getContacts(){
-		if(count(self::$contacts) === 0){
-			$cm = $this->contactsManager;
-			$result = $cm->search('',array('FN'));
-            return $result;
+	public function getList(){
+		$activeAddressbooks = Addressbook::activeIds();
+		$contacts = Array();
+		foreach($activeAddressbooks as $activeAddressbook) {
+			foreach(VCard::all([$activeAddressbook[0]]) as $contact) {
+				$contacts[$contact['id']] = new Contact(
+					$this->contactsManager,
+					$this->cache,
+					$this->fbController,
+					$contact['id'],
+					$contact['addressbookid'],
+					$contact['lastmodified'],
+					VObject\Reader::read($contact["carddata"])
+				);
+			}
 		}
-		return self::$contacts;
+		uasort($contacts, array($this, 'sortContacts'));
+		return $contacts;
 	}
     
 	/**
-	 * Retrieves a single contact from the ContactsManager.
-	 * @param int id of the desired contact
-	 * @return array
+	 * Retrieves a single contact from the ContactsManager and parse
+	 * them to a usable format
+	 * @return array 
 	 */
-	public function getContact($contactID){
-		if(is_string($contactID) && (int)$contactID != 0){
-			$result = $this->getContacts();
-			foreach ($result as $r) {
-				if($r['id'] == $contactID) {
-					return $r;
-				}
-			}
+	public function getContact($id){
+		$contact = VCard::find($id);
+		$activeAddressbooks=Addressbook::activeIds();
+		// Do you have the right to get this contact?
+		if(in_array($contact['addressbookid'], $activeAddressbooks)) {
+			return new Contact(
+				$this->contactsManager,
+				$this->cache,
+				$this->fbController,
+				$contact['id'],
+				$contact['addressbookid'],
+				$contact['lastmodified'],
+				VObject\Reader::read($contact["carddata"])
+			);
+		} else {
 			return false;
 		}
-		return false;
 	}
-    
+	
 	/**
-	 * Retrieves all contacts from the ContactsManager and parse them to a
-	 * usable format.
-	 * @return array Returns array with contacts, contacts as a list and
-	 * contacts as an associative array
+	 * Retrieve and set the facebook photo
+	 * @NoAdminRequired
 	 */
-	public function setPhoto($contactID, $FBID, $backend, $addressbook){
-		if(is_string($contactID) && is_string($FBID) && (int)$contactID != 0 && (int)$FBID != 0 ){
-			$tmpfname = tempnam("/tmp", "UL_IMAGE");
-			$img = file_get_contents("https://graph.facebook.com/$FBID/picture?height=1000");
-			file_put_contents($tmpfname, $img);
-
-			$base64 = "PHOTO;ENCODING=b;TYPE=$type;".base64_encode($img);
-			
-			$image = new Image(base64_encode($img));
-			// Center auto crop!!
-			$image->centerCrop();
-			
-			if($image->height()<100 || $image->width()<100) {
-				return Array(
-					"error"=>'Image too small',
-					"backend" => $backend,
-					"addressBookId" => $addressbook,
-					"contactId" => $contactID,);
-			}
-			
-			$max_size=TemporaryPhoto::MAX_SIZE;
-			$height=$image->height()>$max_size?$max_size:$image->height();
-			$width=$image->width()>$max_size?$max_size:$image->width();
-			
-			$key = uniqid('photo-');
-			$this->cache->set($key, $image->data(), 600);
-
-			return Array(
-				"backend" => $backend,
-				"addressBookId" => $addressbook,
-				"contactId" => $contactID,
-				"cachedImage" => $key,
-				"h" => $height,
-				"w" => $width
-			);
+	public function setPhoto($id) {
+		return $this->getContact($id)->setPhoto();
+	}
+	
+	/**
+	 * Get a list of contact IDs that have a FBID
+	 * @NoAdminRequired
+	 */
+	public function contactsIds() {
+		$contacts = $this->getList();
+		$idList = Array();
+		foreach($contacts as $contact) {
+			if(isset($contact->vcard->FBID))
+				$idList[] = $contact->id;
 		}
-		return false;
+		return $idList;
+	}
+	
+	
+	/**
+	 * Match exacts name
+	 * @NoAdminRequired
+	 */
+	public function setFBID($id, $fbid) {
+		return $this->getContact($id)->setFBID($fbid);
+	}
+	
+	/**
+	 * Match exacts name
+	 * @NoAdminRequired
+	 */
+	public function delFBID($id) {
+		return $this->getContact($id)->delFBID();
+	}
+	
+	/**
+	 * Match exacts name
+	 * @NoAdminRequired
+	 */
+	public function perfectMatch() {
+		$contacts = $this->getList();
+		$contactsName = Array();
+		$edited=0;
+		// List contacts by Name
+		foreach ($contacts as $contact) {
+			$contactsName[$contact->getName()]=$contact;
+		}
+		$friends = $this->fbController->getfriends();
+		// Parse all friends
+		foreach($friends as $fbid => $friend) {
+			// Match exact name
+			if(isset($contactsName[$friend])) {
+				if($contactsName[$friend]->getFBID() != $fbid) {
+					$edited++;
+					$contactsName[$friend]->setFBID($fbid);
+				}
+			}
+		}
+		return $edited;
+	}
+	
+	/**
+	 * Match approx name using Jaro-Winkler algorithm
+	 * @NoAdminRequired
+	 */
+	public function approxMatch() {
+		$results = Array();
+		$contacts = $this->getList();
+		$friends = $this->fbController->getfriends();
+		$edited=0;
+		
+		// Build an array of used fbid
+		$FBIDs=Array();
+		foreach($contacts as $contact) {
+			if(isset($contact->vcard->FBID))
+				$FBIDs[]=$contact->getFBID();
+		}
+		
+		// Go through all contacts
+		foreach($contacts as $contact) {
+			// Only if no FBID set (We do not want to override previous macthes)
+			if(!in_array($contact->getFBID(), $FBIDs)) {
+				foreach($friends as $fbid => $friend) {
+					$jaro = $contact->Jaro($friend)*100;
+					// Only best matches
+					if($jaro > App::JAROWINKLERMAX && !in_array($fbid, $FBIDs)) {
+						// Store as integer and big enough so that no results will overwrite another
+						$results[round($jaro*100000)][$fbid]=$contact;
+					}
+				}
+			}
+		}
+		// Order by Jaro score
+		krsort($results);
+		// Time to parse the results
+		foreach($results as $score => $result) {
+			foreach($result as $fbid => $contact) {
+				// If a contact as been set before, ignore the other potential matches
+				if(!in_array($fbid, $FBIDs)) {
+					$contact->setFBID($fbid);
+					$FBIDs[]=$fbid;
+					$edited++;
+				}
+			}
+		}
+		
+		return $edited;
 	}
 }
