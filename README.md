@@ -1,7 +1,7 @@
 # Fb Sync
 Place this app in **owncloud/apps/**
 
-WARNING! this application is in alpha! Be careful of what you do and MAKE BACKUPS!
+WARNING! Be careful of what you do and MAKE BACKUPS!
 
 
 ## Publish to App Store
