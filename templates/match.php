@@ -8,6 +8,7 @@
  * @author NOIJN <fremulon@protonmail.com>
  * @copyright NOIJN 2015
  */
+use OCA\FbSync\AppInfo\Application as App;
 
 script('fbsync', 'login');
 script('fbsync', 'match');
@@ -30,7 +31,7 @@ $friends = $_['facebook']->getfriends();
 	<div id="app-content">
 		<div id="controls" class="clear">
 			<div class="controls-left">
-				<div class="controls_item button last crumb"><h2>Match found contacts</h2></div>
+<!--				<div class="controls_item button last crumb"><h2>Match found contacts</h2></div>-->
 				<button id="togglematch" class="tooltipped-bottom" title="Toggle the view">Display only contacts without match</button>
 				<button id="sortA" class="tooltipped-bottom fa fa-sort-alpha-asc" title="Alphabetical order"></button>
 				<button id="sortT" class="tooltipped-bottom fa fa-sort-numeric-asc" title="Last edit time order"></button>
@@ -59,7 +60,6 @@ $friends = $_['facebook']->getfriends();
 				</button>
 			</div>
 		</div>
-<!--
 		<div id="loader">
 			<div class="spinner">
 				<div class="rect1"></div>
@@ -70,8 +70,7 @@ $friends = $_['facebook']->getfriends();
 			</div>
 			<div id="loading-status">Loading contacts...</div>
 		</div>
--->
-		<div id="contacts-list" data-friends="<?=count($friends) ?>" data-contacts="<?=count($contacts) ?>">
+		<div id="contacts-list" class="hidden" data-friends="<?=count($friends) ?>" data-contacts="<?=count($contacts) ?>">
 			<?php
 			foreach($contacts as $contact) {
 				if($contact->addressbook != "") {
@@ -95,13 +94,8 @@ $friends = $_['facebook']->getfriends();
 					// PHOTO
 					echo '<div class="photo';
 					if(isset($contact->vcard->PHOTO)) {
-						$photo = "index.php/apps/contacts/addressbook/".
-							$contact->backend."/".
-							$contact->addressbook."/contact/".
-							$contact->id."/photo?maxSize=40";
-						// 40px max
 //						echo '" style="background-image:url(\''.$photo.'\')">';
-						echo '"><img src="'.$photo.'" />';
+						echo '"><img src="index.php/apps/fbsync/getphoto/'.$contact->id.'/40" height="40" width="40" />';
 					} else {
 						echo ' nophoto">';
 					}

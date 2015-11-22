@@ -45,7 +45,7 @@ style('fbsync', 'fbsync');
 		<div class="main-app-intro">
 			Recently facebook decided to block many things of their API. The full friend list became inaccessible, and many profiles picture too. A lot of android app became worthless.
 			So because I love owncloud, I decided to work on a sync app.<br />
-			I figured out how to retrieve the facebook data by using the mobile website and a cookie auth (which isn't secure for now, because the cookie is stored in plain text on the owncloud root! :O)
+			I figured out how to retrieve the facebook data by using the mobile website and a cookie auth.
 			<br /><br />
 			Please HELP! Fill an issue for any bugs found. I will happilly work to improve this app on my free time!<br />
 			<a href="https://github.com/skjnldsv/Owncloud-FBSync"><h3>Github</h3></a>

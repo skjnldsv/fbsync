@@ -12,7 +12,6 @@
 namespace OCA\FbSync\App;
 
 use OCA\FbSync\Controller\ContactsController;
-use OCA\Contacts\Utils\TemporaryPhoto;
 use OCP\ICache;
 use OCP\Image;
 use OCA\FbSync\Controller\FacebookController;
@@ -168,6 +167,28 @@ class Contact {
 	 */
 	public function setFBID($fbid) {
 		return $this->updateFBID($fbid);
+	}
+	
+	/**
+	 * Get photo URL
+	 */
+	public function getPhotoUrl($size=false) {
+		if(App::$contactPlus) {
+			$photo = "index.php/apps/contactsplus/getcontactphoto/".$this->id;						 	
+		} else {
+
+			$photo = "index.php/apps/contacts/addressbook/".
+				$this->backend."/".
+				$this->addressbook."/contact/".
+				$this->id."/photo";
+		}
+		
+		if(!$size) {
+			header('Location: '.$photo);
+		} else {
+			header('Location: '.$photo.'?maxSize='.$size);
+		}
+		return $photo;
 	}
 	
 	/**

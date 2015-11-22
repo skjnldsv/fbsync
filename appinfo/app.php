@@ -13,7 +13,7 @@ namespace OCA\FbSync\AppInfo;
 
 use OCA\FbSync\AppInfo\Application as FbSyncApp;	
 
-if(\OCP\App::isEnabled('contacts')) {
+if(\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus')) {
 	$app = new FbSyncApp();
 	$c = $app->getContainer();
 	

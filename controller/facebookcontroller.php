@@ -38,12 +38,13 @@ class FacebookController extends Controller {
 	 * @var Int Friends cache key
 	 */
 	private $cacheTime = 24*60*60;
-	private $cacheKey = "FBfriends";
+	private $cacheKey = "FBfriends-";
 
 	public function __construct($AppName, IRequest $request, ICache $cache, $userHome){
 		parent::__construct($AppName, $request);
 		$this->cache = $cache;
 		$this->userHome = $userHome;
+		$this->cacheKey = $cacheKey.substr(md5($this->userHome), 0, 8);
 	}
     
     /**
@@ -137,7 +138,7 @@ class FacebookController extends Controller {
 		if(!empty($cachedFriends) && is_array($cachedFriends) && !$ignoreCache) {
 			return $cachedFriends;
 			
-		} else if($this->is_logged()) {
+		} else if($this->islogged()) {
 			$this->cache->remove($this->cacheKey);
 
 			$friends = array();
@@ -210,8 +211,9 @@ class FacebookController extends Controller {
 	/**
 	 * Check if logged to facebook
 	 * @NoAdminRequired
+	 * @NoCSRFRequired
 	 */
-	public function is_logged() {
+	public function islogged() {
 		// No cookie set, we don't need to go further
 		if(filesize($this->userHome.$this->cookieName) == 0) {
 			return false;

@@ -21,6 +21,8 @@ function logcheck() {
 (function ($, OC) {
 
 	$(document).ready(function () {
+		
+//----------  LOGIN  ----------
 		$('#fblogin').click(function () {
 			var url = OC.generateUrl('apps/fbsync/facebook/login');
 			var data = {
@@ -42,6 +44,29 @@ function logcheck() {
 			});
 
 		});
+		
+//----------  LOGIN STATUS ----------
+		$.ajax({ 
+			url: OC.generateUrl('apps/fbsync/facebook/islogged'),
+			type: 'GET'
+		}).done(function(response) {
+			if(response) {
+				status="Connected";
+				statusclass="login-ok";
+			} else {
+				status="Not connected";
+				statusclass="login-bad";
+			}
+			$("#login-status > span").text(status).addClass(statusclass);
+			// Reload
+			return true;
+		}).fail(function(response) {
+			console.log(response);
+			return false;
+		});
+		
+		
+		$('.tooltipped').tipsy();
 	});
 
 })(jQuery, OC);

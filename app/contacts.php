@@ -127,6 +127,14 @@ class Contacts {
 	}
 	
 	/**
+	 * Get profile picture url
+	 * @NoAdminRequired
+	 */
+	public function getPhoto($id, $size) {
+		return $this->getContact($id)->getPhotoUrl($size);
+	}
+	
+	/**
 	 * Match exacts name
 	 * @NoAdminRequired
 	 */

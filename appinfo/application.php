@@ -30,22 +30,19 @@ class Application extends App {
 	 * An array holding the current users address books.
 	 * @var array
 	 */
-	public static $appname = 'fbsync';
-	public static $l10n;
+	static $appname = 'fbsync';
+	static $l10n;
 	// No PHOTO in $ContactsProbTable
 	public static $index_properties = array('BDAY', 'UID', 'N', 'FN', 'TITLE', 'ROLE', 'NOTE', 'NICKNAME', 'ORG',
 											'CATEGORIES', 'EMAIL', 'TEL', 'IMPP', 'ADR', 'URL', 'GEO', 'CLOUD', 'FBID');
 
 	// From contacts+
-	const THUMBNAIL_PREFIX = 'contacts-photo-';
-	const THUMBNAIL_SIZE = 28;
-	const ContactsTable='*PREFIX*contacts_cards';
-	const AddrBookTable='*PREFIX*contacts_addressbooks';
-	const ContactsProbTable='*PREFIX*contacts_cards_properties';
-	const SHAREADDRESSBOOK = 'addressbook';
-	const SHAREADDRESSBOOKPREFIX = '';
-	const SHARECONTACT = 'cplcontact';
-	const SHARECONTACTPREFIX = '';
+	static $ContactsTable;
+	static $AddrBookTable;
+	static $ContactsProbTable;
+	static $ShareAddressBook;
+	static $ShareAddressBookPREFIX;
+	static $contactPlus=false;
 	const MAXPICTURESIZE = 800;
 	const JAROWINKLERMAX = 85; // Percent for Jaro-Winkler match tolerance
 	
@@ -53,7 +50,22 @@ class Application extends App {
 		
 		parent::__construct(self::$appname, $urlParams);
         $container = $this->getContainer();
-	
+		
+		// Contact+ compatibility
+		if(\OCP\App::isEnabled('contactsplus')) {
+			self::$ContactsTable = '*PREFIX*conplus_cards';
+			self::$AddrBookTable = '*PREFIX*conplus_addressbooks';
+			self::$ContactsProbTable = '*PREFIX*conplus_cards_properties';
+			self::$ShareAddressBook = 'cpladdrbook';
+			self::$ShareAddressBookPREFIX = '';
+			self::$contactPlus=true;
+		} else {
+			self::$ContactsTable = '*PREFIX*contacts_cards';
+			self::$AddrBookTable = '*PREFIX*contacts_addressbooks';
+			self::$ContactsProbTable = '*PREFIX*contacts_cards_properties';
+			self::$ShareAddressBook = 'addressbook';
+			self::$ShareAddressBookPREFIX = '';
+		}
 		 
 		/**
 		 * User home folder

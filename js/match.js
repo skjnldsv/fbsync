@@ -115,6 +115,7 @@ function sortT(a,b){
 		
 		$('.tooltipped-top').tipsy({gravity: 's'});
 		$('.tooltipped-bottom').tipsy({gravity: 'n'});
+		$('#contacts-list').fadeOut();
 		
 //----------  RESIZE ----------				
 		// Hack to resize auto #controls (/core/js/js.js:1435)
@@ -204,8 +205,12 @@ function sortT(a,b){
 			}
 		});
 		
-//----------  INIT STATS ----------			
-		reloadMatched()
+//----------  INIT STATS ----------	
+		reloadMatched();
+		$(window).on("load", function() {
+			$('#loader').remove();
+			$('#contacts-list').fadeIn();
+		});
 		
 	});
 

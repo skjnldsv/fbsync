@@ -69,7 +69,7 @@ class VCard {
 			
 		if(is_array($id) && count($id)) {
 			$id_sql = join(',', array_fill(0, count($id), '?'));
-			$sql = "SELECT * FROM `".App::ContactsTable."` WHERE `addressbookid` IN (".$id_sql.") ".$addWhere." ORDER BY LOWER(`fullname`) ";
+			$sql = "SELECT * FROM `".App::$ContactsTable."` WHERE `addressbookid` IN (".$id_sql.") ".$addWhere." ORDER BY LOWER(`fullname`) ";
 			try {
 				$stmt = \OCP\DB::prepare($sql, $limit, $offset);
 				$result = $stmt->execute($id);
@@ -83,7 +83,7 @@ class VCard {
 			}
 		} elseif(is_int($id) || is_string($id)) {
 			try {
-				$sql = "SELECT * FROM `".App::ContactsTable."` WHERE `addressbookid` = ? ".$addWhere."  ORDER BY LOWER(`fullname`) ";
+				$sql = "SELECT * FROM `".App::$ContactsTable."` WHERE `addressbookid` = ? ".$addWhere."  ORDER BY LOWER(`fullname`) ";
 				$stmt = \OCP\DB::prepare($sql, $limit, $offset);
 				$result = $stmt->execute(array($id));
 				if (\OCP\DB::isError($result)) {
@@ -145,7 +145,7 @@ class VCard {
 			}
 			
 			
-			$sql = "SELECT * FROM `".App::ContactsTable."` WHERE `id` IN (".$id_sql.") AND `component` = 'VCARD' ORDER BY LOWER(`fullname`) ASC";
+			$sql = "SELECT * FROM `".App::$ContactsTable."` WHERE `id` IN (".$id_sql.") AND `component` = 'VCARD' ORDER BY LOWER(`fullname`) ASC";
 			$stmt = \OCP\DB::prepare($sql);
 			$result = $stmt->execute();
 			$cards = array();
@@ -168,7 +168,7 @@ class VCard {
 	  	$SQLStatement="WHERE  `c`.`bcategory`='0' ";
 	  }	else{
 	  	 $SQLStatement="
-	  	 LEFT JOIN `".App::ContactsProbTable."` cp ON  `c`.`id`=`cp`.`contactid`
+	  	 LEFT JOIN `".App::$ContactsProbTable."` cp ON  `c`.`id`=`cp`.`contactid`
 	  	 WHERE `c`.`bcategory`='1' AND `cp`.`name`='CATEGORIES' AND `cp`.`value` LIKE '%".$grpid."%'
 	  	 
 	  	 ";
@@ -181,13 +181,13 @@ class VCard {
   	  if(is_array($id) && count($id)) {
 			$id_sql = join(',', array_fill(0, count($id), '?'));
 		  //SELECT * FROM `oc_contacts_cards` c LEFT JOIN `oc_contacts_cards_properties` cp ON `c`.`id` = `cp`.`contactid` WHERE `c`.`addressbookid`='1' AND `cp`.`name`='CATEGORIES' AND `cp`.`value` LIKE '%Kunden%' ORDER BY `c`.`fullname`
-			$sql = "SELECT `c`.`id`,`c`.`fullname`,`c`.`surename`,`c`.`lastname`,`c`.`carddata`,`c`.`addressbookid`,`c`.`uri`,`c`.`lastmodified`,`c`.`component`  FROM `".App::ContactsTable."` c  
+			$sql = "SELECT `c`.`id`,`c`.`fullname`,`c`.`surename`,`c`.`lastname`,`c`.`carddata`,`c`.`addressbookid`,`c`.`uri`,`c`.`lastmodified`,`c`.`component`  FROM `".App::$ContactsTable."` c  
 			            ".$SQLStatement." AND `c`.`addressbookid` IN (".$id_sql.") ".$addWhere."
 			           ORDER BY LOWER(`c`.`fullname`) ASC";
 			 $stmt = \OCP\DB::prepare($sql, $limit, $offset);
 			 $result = $stmt->execute($id);
 		} elseif(is_int($id) || is_string($id)) {
-			$sql = "SELECT `c`.`id`,`c`.`fullname`,`c`.`surename`,`c`.`lastname`,`c`.`carddata`,`c`.`addressbookid`,`c`.`uri`,`c`.`lastmodified`,`c`.`component`  FROM `".App::ContactsTable."` c  
+			$sql = "SELECT `c`.`id`,`c`.`fullname`,`c`.`surename`,`c`.`lastname`,`c`.`carddata`,`c`.`addressbookid`,`c`.`uri`,`c`.`lastmodified`,`c`.`component`  FROM `".App::$ContactsTable."` c  
 			            ".$SQLStatement." AND `c`.`addressbookid`= ? ".$addWhere."
 			           ORDER BY LOWER(`c`.`fullname`) ASC";
 			 $stmt = \OCP\DB::prepare($sql, $limit, $offset);
@@ -220,7 +220,7 @@ class VCard {
 			$qfields = count($fields) > 0
 				? '`' . implode('`,`', $fields) . '`'
 				: '*';
-			$stmt = \OCP\DB::prepare( 'SELECT ' . $qfields . ' FROM `'.App::ContactsTable.'` WHERE `id` = ?' );
+			$stmt = \OCP\DB::prepare( 'SELECT ' . $qfields . ' FROM `'.App::$ContactsTable.'` WHERE `id` = ?' );
 			$result = $stmt->execute(array($id));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -253,7 +253,7 @@ class VCard {
 	 */
 	public static function findWhereDAVDataIs($aid, $uri) {
 		try {
-			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = ?' );
+			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::$ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = ?' );
 			$result = $stmt->execute(array($aid,$uri));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -276,7 +276,7 @@ class VCard {
 	 */
 	public static function getMultipleCardsDavData($aid, $uris){
 			
-		$query = 'SELECT id`, `uri`, `lastmodified` FROM `'.App::ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = IN (';
+		$query = 'SELECT id`, `uri`, `lastmodified` FROM `'.App::$ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = IN (';
         // Inserting a whole bunch of question marks
         $query.=implode(',', array_fill(0, count($uris), '?'));
         $query.=')';
@@ -397,7 +397,7 @@ class VCard {
 	}
 
    public static function updateCardByUid($uid,$mode,$category) {
-		$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::ContactsTable.'` WHERE  `uri` = ?' );
+		$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::$ContactsTable.'` WHERE  `uri` = ?' );
 		$uri = $uid.'.vcf';
 		$result = $stmt->execute(array($uri));
 		if(!is_null($result)) {
@@ -469,7 +469,7 @@ class VCard {
 	* @returns true if the UID has been changed.
 	*/
 	protected static function trueUID($aid, &$uid) {
-		$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = ?' );
+		$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::$ContactsTable.'` WHERE `addressbookid` = ? AND `uri` = ?' );
 		$uri = $uid.'.vcf';
 		try {
 			$result = $stmt->execute(array($aid,$uri));
@@ -671,7 +671,7 @@ class VCard {
 			
        }
 		
-		$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::ContactsTable.'` (`addressbookid`,`fullname`,`surename`,`lastname`,`carddata`,`uri`,`lastmodified`,`component`, `bcategory`,`organization`,`bcompany`) VALUES(?,?,?,?,?,?,?,?,?,?,?)' );
+		$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::$ContactsTable.'` (`addressbookid`,`fullname`,`surename`,`lastname`,`carddata`,`uri`,`lastmodified`,`component`, `bcategory`,`organization`,`bcompany`) VALUES(?,?,?,?,?,?,?,?,?,?,?)' );
 		try {
 			$result = $stmt->execute(array($aid, $fn,trim($surename),$lastname, $data, $uri, time(),$sComponent,$bGroup,$organization,$bCompany));
 			if (\OCP\DB::isError($result)) {
@@ -683,7 +683,7 @@ class VCard {
 			\OCP\Util::writeLog(App::$appname, __METHOD__.', aid: '.$aid.' uri'.$uri, \OCP\Util::DEBUG);
 			return false;
 		}
-		$newid = \OCP\DB::insertid(App::ContactsTable);
+		$newid = \OCP\DB::insertid(App::$ContactsTable);
 		App::loadCategoriesFromVCard($newid, $card);
 		App::updateDBProperties($newid, $card);
 		App::cacheThumbnail($newid);
@@ -799,7 +799,7 @@ class VCard {
 
 		$data = $card->serialize();
 		
-		$stmt = \OCP\DB::prepare( 'UPDATE `'.App::ContactsTable.'` SET `fullname` = ?, `carddata` = ?, `lastmodified` = ? WHERE `id` = ?' );
+		$stmt = \OCP\DB::prepare( 'UPDATE `'.App::$ContactsTable.'` SET `fullname` = ?, `carddata` = ?, `lastmodified` = ? WHERE `id` = ?' );
 		try {
 			$result = $stmt->execute(array($fn, $data, time(), $id));
 			if (\OCP\DB::isError($result)) {
@@ -1271,6 +1271,8 @@ class VCard {
 	}
 	
 	/*
+	 * No differences in db between the contacts+ app and the contacts app. No alt function needed
+	 *
 	 * From Contactsplus
 	 * https://github.com/libasys/contactsplus/blob/master/lib/app.php#L721
 	 *
@@ -1279,7 +1281,7 @@ class VCard {
 	 * @param $vcard  vcard object
 	 */
 	public static function updateDBProperties($contactid, $vcard = null) {
-		$stmt = \OCP\DB::prepare('DELETE FROM `'.App::ContactsProbTable.'` WHERE `contactid` = ?');
+		$stmt = \OCP\DB::prepare('DELETE FROM `'.App::$ContactsProbTable.'` WHERE `contactid` = ?');
 		try {
 			$stmt->execute(array($contactid));
 		} catch(\Exception $e) {
@@ -1298,7 +1300,7 @@ class VCard {
 			return;
 		}
 
-		$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::ContactsProbTable.'` '
+		$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::$ContactsProbTable.'` '
 			. '(`userid`, `contactid`,`name`,`value`,`preferred`) VALUES(?,?,?,?,?)' );
 		foreach($vcard->children as $property) {
 			if(!in_array($property->name, App::$index_properties)) {

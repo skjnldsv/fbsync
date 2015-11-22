@@ -15,6 +15,7 @@
 		<button class="settings-button"
 				data-apps-slide-toggle="#app-settings-content"
 		></button>
+		<div id="login-status" class="tooltipped" title="Facebook status">Facebook status: <span>loading</span></div>
 	</div>
 	<div id="app-settings-content">
 		<i>Credentials</i><br>

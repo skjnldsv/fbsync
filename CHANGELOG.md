@@ -1,3 +1,12 @@
+1.2.0:
+ - Cache key name fix
+ - Status page text edit
+ - Cleanup
+ - Contact+ compatiility (match & sync)
+ - Facebook connection status
+ - Status messages
+ - Prevent app access if not logged
+ 
 1.1.0:
  - Workaround for friends who have disabled the graph API
  - Second auto match system using the Jaro-Winkler algorithm

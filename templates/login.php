@@ -10,7 +10,6 @@
  */
 
 script('fbsync', 'login');
-script('fbsync', 'sync');
 style('fbsync', 'fbsync');
 ?>
 
@@ -21,16 +20,7 @@ style('fbsync', 'fbsync');
 	</div>
 
 	<div id="app-content">
-		<div id="controls" class="clear">
-			<div class="controls-left">
-<!--				<div class="controls_item button last crumb"><h2>Sync profile pictures</h2></div>-->
-				<button id="syncall">Sync all pictures</button>
-			</div>
-			<div class="controls-right">
-				<div class="controls_item button" id="syncstatus">Loading...</div>
-			</div>
-		</div>
-		<div id="loader" class="hidden">
+		<div id="loader">
 			<div class="spinner">
 				<div class="rect1"></div>
 				<div class="rect2"></div>
@@ -38,11 +28,7 @@ style('fbsync', 'fbsync');
 				<div class="rect4"></div>
 				<div class="rect5"></div>
 			</div>
-			<div id="loading-status">Syncing...</div>
-		</div>
-		<div id="contacts-list" class="hidden">
-			<div id="syncsuccess" class="clear"><h2>Successful syncs</h2><br></div>
-			<div id="syncerror" class="clear"><h2>Syncs errors</h2><br></div>
+			<div id="loading-status">Please login...</div>
 		</div>
 	</div>
 </div>

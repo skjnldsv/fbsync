@@ -63,7 +63,7 @@ class Addressbook {
 			$sqlOrder='`sync` DESC';
 		}
 		try {
-			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::AddrBookTable.'` WHERE `userid` = ? ' . $active_where . ' ORDER BY '.$sqlOrder );
+			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::$AddrBookTable.'` WHERE `userid` = ? ' . $active_where . ' ORDER BY '.$sqlOrder );
 			$result = $stmt->execute($values);
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::write(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -82,7 +82,7 @@ class Addressbook {
 		}
 
 		if($shared === true) {
-			$sharedAddressbooks = \OCP\Share::getItemsSharedWith(App::SHAREADDRESSBOOK, \OCA\Contacts\Share\Addressbook::FORMAT_ADDRESSBOOKS);
+			$sharedAddressbooks = \OCP\Share::getItemsSharedWith(App::$ShareAddressBook, 1);
 			// workaround for https://github.com/owncloud/core/issues/2814
 			foreach($sharedAddressbooks as $sharedAddressbook) {
 				if(isset($sharedAddressbook['id']) && self::find($sharedAddressbook['id'])) {
@@ -91,7 +91,7 @@ class Addressbook {
 			}
 		}
 		
-		// Because contacts app doesn use their own sql rows...
+		// Because contacts app doesnt use their own sql rows...
 		if (count($addressbooks)>0) {
 			foreach($addressbooks as $key => $addressbook) {
 				if(!self::isActive_Alt($addressbook["id"]))
@@ -115,7 +115,7 @@ class Addressbook {
 		$activeaddressbooks = self::all($uid);
 		$returnArray=array();
 		foreach($activeaddressbooks as $addressbook) {
-			$sql="SELECT COUNT(id) AS COUNTER FROM `".App::ContactsTable."` WHERE `addressbookid`=? AND `component`= ?";
+			$sql="SELECT COUNT(id) AS COUNTER FROM `".App::$ContactsTable."` WHERE `addressbookid`=? AND `component`= ?";
 			$stmt = \OCP\DB::prepare($sql);
 			$result = $stmt->execute(array($addressbook['id'],'VCARD'));
 			$row = $result->fetchRow();
@@ -158,7 +158,7 @@ class Addressbook {
 	}
 
     public static function checkIfExist($sDisplayname){
-    	$stmt = \OCP\DB::prepare( 'SELECT `id` FROM `'.App::AddrBookTable.'` WHERE `displayname` = ? AND `userid` = ?' );
+    	$stmt = \OCP\DB::prepare( 'SELECT `id` FROM `'.App::$AddrBookTable.'` WHERE `displayname` = ? AND `userid` = ?' );
 		$result = $stmt->execute(array($sDisplayname,\OCP\USER::getUser()));
 		$row = $result->fetchRow();
 		if(!$row) {
@@ -185,7 +185,7 @@ class Addressbook {
 	 */
 	public static function find($id) {
 		try {
-			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::AddrBookTable.'` WHERE `id` = ?' );
+			$stmt = \OCP\DB::prepare( 'SELECT * FROM `'.App::$AddrBookTable.'` WHERE `id` = ?' );
 			$result = $stmt->execute(array($id));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -202,7 +202,7 @@ class Addressbook {
 		}
 
 		if($row['userid'] != \OCP\USER::getUser() && !\OC_Group::inGroup(\OCP\User::getUser(), 'admin')) {
-			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::SHAREADDRESSBOOK, App::SHAREADDRESSBOOKPREFIX.$id);
+			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::$ShareAddressBook, App::$ShareAddressBookPREFIX.$id);
 			if (!$sharedAddressbook || !($sharedAddressbook['permissions'] & \OCP\PERMISSION_READ)) {
 				throw new \Exception(
 					App::$l10n->t(
@@ -241,7 +241,7 @@ class Addressbook {
 	 */
 	public static function add($uid,$name,$description='') {
 		try {
-			$stmt = \OCP\DB::prepare( 'SELECT `uri` FROM `'.App::AddrBookTable.'` WHERE `userid` = ? ' );
+			$stmt = \OCP\DB::prepare( 'SELECT `uri` FROM `'.App::$AddrBookTable.'` WHERE `userid` = ? ' );
 			$result = $stmt->execute(array($uid));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -259,7 +259,7 @@ class Addressbook {
 
 		$uri = self::createURI($name, $uris );
 		try {
-			$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::AddrBookTable.'` (`userid`,`displayname`,`uri`,`description`,`ctag`) VALUES(?,?,?,?,?)' );
+			$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::$AddrBookTable.'` (`userid`,`displayname`,`uri`,`description`,`ctag`) VALUES(?,?,?,?,?)' );
 			$result = $stmt->execute(array($uid,$name,$uri,$description,1));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -271,7 +271,7 @@ class Addressbook {
 			return false;
 		}
 
-		return \OCP\DB::insertid(App::AddrBookTable);
+		return \OCP\DB::insertid(App::$AddrBookTable);
 	}
 
 	/**
@@ -286,7 +286,7 @@ class Addressbook {
 		$uid = self::extractUserID($principaluri);
 
 		try {
-			$stmt = \OCP\DB::prepare('INSERT INTO `'.App::AddrBookTable.'` '
+			$stmt = \OCP\DB::prepare('INSERT INTO `'.App::$AddrBookTable.'` '
 				. '(`userid`,`displayname`,`uri`,`description`,`ctag`) VALUES(?,?,?,?,?)');
 			$result = $stmt->execute(array($uid, $name, $uri, $description, 1));
 			if (\OCP\DB::isError($result)) {
@@ -300,7 +300,7 @@ class Addressbook {
 			return false;
 		}
 
-		return \OCP\DB::insertid(App::AddrBookTable);
+		return \OCP\DB::insertid(App::$AddrBookTable);
 	}
 
 	/**
@@ -314,7 +314,7 @@ class Addressbook {
 		// Need these ones for checking uri
 		$addressbook = self::find($id);
 		if ($addressbook['userid'] != \OCP\User::getUser() && !\OC_Group::inGroup(OCP\User::getUser(), 'admin')) {
-			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::SHAREADDRESSBOOK,App::SHAREADDRESSBOOKPREFIX. $id);
+			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::$ShareAddressBook,App::$ShareAddressBookPREFIX. $id);
 			if (!$sharedAddressbook || !($sharedAddressbook['permissions'] & \OCP\PERMISSION_UPDATE)) {
 				throw new \Exception(
 					App::$l10n->t(
@@ -331,7 +331,7 @@ class Addressbook {
 		}
 
 		try {
-			$stmt = \OCP\DB::prepare('UPDATE `'.App::AddrBookTable.'` SET `displayname`=?,`description`=?, `ctag`=`ctag`+1 WHERE `id`=?');
+			$stmt = \OCP\DB::prepare('UPDATE `'.App::$AddrBookTable.'` SET `displayname`=?,`description`=?, `ctag`=`ctag`+1 WHERE `id`=?');
 			$result = $stmt->execute(array($name,$description,$id));
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
@@ -361,7 +361,7 @@ class Addressbook {
 	 * @return boolean
 	 */
 	public static function setActive($id,$active) {
-		$sql = 'UPDATE `'.App::AddrBookTable.'` SET `active` = ? WHERE `id` = ?';
+		$sql = 'UPDATE `'.App::$AddrBookTable.'` SET `active` = ? WHERE `id` = ?';
 
 		try {
 			$stmt = \OCP\DB::prepare($sql);
@@ -379,7 +379,7 @@ class Addressbook {
 	 * @return boolean
 	 */
 	public static function isActive($id) {
-		$sql = 'SELECT `active` FROM `'.App::AddrBookTable.'` WHERE `id` = ?';
+		$sql = 'SELECT `active` FROM `'.App::$AddrBookTable.'` WHERE `id` = ?';
 		try {
 			$stmt = \OCP\DB::prepare( $sql );
 			$result = $stmt->execute(array($id));
@@ -401,7 +401,7 @@ class Addressbook {
 	 * @return boolean
 	 */
 	public static function touch($id) {
-		$stmt = \OCP\DB::prepare( 'UPDATE `'.App::AddrBookTable.'` SET `ctag` = ? + 1 WHERE `id` = ?' );
+		$stmt = \OCP\DB::prepare( 'UPDATE `'.App::$AddrBookTable.'` SET `ctag` = ? + 1 WHERE `id` = ?' );
 		$ctag = time();
 		$stmt->execute(array($ctag, $id));
 
@@ -437,7 +437,7 @@ class Addressbook {
 	/**
 	 * FROM Contacts https://github.com/owncloud/contacts/blob/master/lib/backend/abstractbackend.php#L421
 	 *
-	 * @brief Query whether a backend or an address book is active
+	 * @brief Query whether a backend or an address book is active for the contacts app
 	 * @param string $addressBookId If null it checks whether the backend is activated.
 	 * @return boolean
 	 */

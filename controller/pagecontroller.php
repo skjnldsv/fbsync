@@ -51,6 +51,9 @@ class PageController extends Controller {
 	 */
 	public function match() {
 		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
+		if(!$this->facebook->islogged()) {
+			return new TemplateResponse('fbsync', 'login', $params);  // templates/login.php
+		}
 		return new TemplateResponse('fbsync', 'match', $params);  // templates/match.php
 	}
     
@@ -59,6 +62,9 @@ class PageController extends Controller {
 	 */
 	public function sync() {
 		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
+		if(!$this->facebook->islogged()) {
+			return new TemplateResponse('fbsync', 'login', $params);  // templates/login.php
+		}
 		return new TemplateResponse('fbsync', 'sync', $params);  // templates/sync.php
 	}
 

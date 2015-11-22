@@ -42,6 +42,23 @@
 	padding-right: 33px;
 }
 
+/* ---- STATUS ---- */
+#login-status {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    line-height: 44px;
+	color: #888;
+}
+#login-status .login-ok {
+	color: #569845;
+	font-style: italic,
+}
+#login-status .login-bad {
+	color: #a52338;
+	font-weight: bold;
+}
+
 /* ---- CONTENT ---- */
 #app-content {
 /*	padding-top: 20px;*/
