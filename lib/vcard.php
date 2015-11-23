@@ -1290,9 +1290,7 @@ class VCard {
 			\OCP\Util::writeLog(App::$appname, __METHOD__.', id: '
 				. $id, \OCP\Util::DEBUG);
 			throw new \Exception(
-				App::$l10n->t(
-					'There was an error deleting properties for this contact.'
-				)
+				'There was an error deleting properties for this contact.'
 			);
 		}
 

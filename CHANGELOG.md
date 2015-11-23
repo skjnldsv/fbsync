@@ -1,3 +1,10 @@
+1.3.0:
+ - Error messages
+ - Cache duration setting fix (fixed #3 & #4)
+ - Added birthday sync 
+ - More cleanup
+ - Improved code
+
 1.2.0:
  - Cache key name fix
  - Status page text edit

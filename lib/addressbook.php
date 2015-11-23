@@ -205,9 +205,7 @@ class Addressbook {
 			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::$ShareAddressBook, App::$ShareAddressBookPREFIX.$id);
 			if (!$sharedAddressbook || !($sharedAddressbook['permissions'] & \OCP\PERMISSION_READ)) {
 				throw new \Exception(
-					App::$l10n->t(
-						'You do not have the permissions to read this addressbook.'
-					)
+					'You do not have the permissions to read this addressbook.'
 				);
 			}
 			$row['permissions'] = $sharedAddressbook['permissions'];
@@ -317,9 +315,7 @@ class Addressbook {
 			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::$ShareAddressBook,App::$ShareAddressBookPREFIX. $id);
 			if (!$sharedAddressbook || !($sharedAddressbook['permissions'] & \OCP\PERMISSION_UPDATE)) {
 				throw new \Exception(
-					App::$l10n->t(
-						'You do not have the permissions to update this addressbook.'
-					)
+					'You do not have the permissions to update this addressbook.'
 				);
 			}
 		}
@@ -336,18 +332,14 @@ class Addressbook {
 			if (\OCP\DB::isError($result)) {
 				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
 				throw new \Exception(
-					App::$l10n->t(
-						'There was an error updating the addressbook.'
-					)
+					'There was an error updating the addressbook.'
 				);
 			}
 		} catch(\Exception $e) {
 			\OCP\Util::writeLog(App::$appname, __METHOD__ . ', exception: ' . $e->getMessage(), \OCP\Util::ERROR);
 			\OCP\Util::writeLog(App::$appname, __METHOD__ . ', id: ' . $id, \OCP\Util::DEBUG);
 			throw new \Exception(
-				App::$l10n->t(
-					'There was an error updating the addressbook.'
-				)
+				'There was an error updating the addressbook.'
 			);
 		}
 

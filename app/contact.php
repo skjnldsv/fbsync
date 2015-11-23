@@ -145,6 +145,58 @@ class Contact {
 			);
 		}
 	}
+    
+	/**
+	 * Get and set birthday date if not already set
+	 */
+	public function setBirthday(){
+		// We don't want to override data.
+		// We only set birthday to people without one defined
+		if(!isset($this->vcard->FBID)) {
+			return Array(
+				"error" => 'No FBID',
+				"id" => $this->id,
+				"name" => $this->getName(),
+				"name" => $this->getName(),
+				"backend" => $this->backend,
+				"addressbook" => $this->addressbook
+			);
+		} else if(isset($this->vcard->BDAY)) {
+			return Array(
+				"error" => 'Already have a birthday',
+				"id" => $this->id,
+				"name" => $this->getName(),
+				"name" => $this->getName(),
+				"backend" => $this->backend,
+				"addressbook" => $this->addressbook,
+				"birthday" => true
+			);
+		}
+		// All good, let's do it
+		$birthday = $this->fbController->getBirthday($this->getFBID());
+		if(!birthday) {
+			return Array(
+				"error" => 'No birthday found',
+				"id" => $this->id,
+				"name" => $this->getName(),
+				"name" => $this->getName(),
+				"backend" => $this->backend,
+				"addressbook" => $this->addressbook
+			);
+		} else {
+			$this->vcard->add('BDAY', $birthday);
+			$this->save();
+			return Array(
+				"error" => false,
+				"id" => $this->id,
+				"name" => $this->getName(),
+				"name" => $this->getName(),
+				"backend" => $this->backend,
+				"addressbook" => $this->addressbook,
+				"birthday" => $birthday
+			);
+		}
+	}
 	
 	/**
 	 * update FBID

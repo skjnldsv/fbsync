@@ -96,6 +96,14 @@ class Contacts {
 	}
 	
 	/**
+	 * Retrieve and set the facebook photo
+	 * @NoAdminRequired
+	 */
+	public function setBirthday($id) {
+		return $this->getContact($id)->setBirthday();
+	}
+	
+	/**
 	 * Get a list of contact IDs that have a FBID
 	 * @NoAdminRequired
 	 */

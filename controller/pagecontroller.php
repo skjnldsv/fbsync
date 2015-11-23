@@ -45,15 +45,27 @@ class PageController extends Controller {
 		$params = [];
 		return new TemplateResponse('fbsync', 'status', $params);  // templates/status.php
 	}
+	
+    /**
+	 * @NoCSRFRequired
+	 */
+	private function error($error) {
+		$params = ['error' => $error];
+		return new TemplateResponse('fbsync', 'error', $params);  // templates/login.php
+	}
 
 	/**
 	 * @NoCSRFRequired
 	 */
 	public function match() {
-		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
+		$contactsList = $this->contacts->getList();
 		if(!$this->facebook->islogged()) {
-			return new TemplateResponse('fbsync', 'login', $params);  // templates/login.php
+			return $this->error('Please login to facebook first.');
 		}
+		if(empty($contactsList)) {
+			return $this->error('No contact found...<br />Please enable at least one addressbook containing contacts.');
+		}
+		$params = ['contacts' => $contactsList, 'facebook' => $this->facebook];
 		return new TemplateResponse('fbsync', 'match', $params);  // templates/match.php
 	}
     
@@ -61,10 +73,18 @@ class PageController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function sync() {
-		$params = ['contacts' => $this->contacts, 'facebook' => $this->facebook];
+		$contactsList = $this->contacts->getList();
+		$FBcontacts = $this->contacts->contactsIds();
 		if(!$this->facebook->islogged()) {
-			return new TemplateResponse('fbsync', 'login', $params);  // templates/login.php
+			return $this->error('Please login to facebook first.');
 		}
+		if(empty($FBcontacts)) {
+			return $this->error('Please match some contacts first.');
+		}
+		if($contactsList == 0) {
+			return $this->error('No contact found...<br />Please enable at least one addressbook containing contacts.');
+		}
+		$params = [];
 		return new TemplateResponse('fbsync', 'sync', $params);  // templates/sync.php
 	}
 

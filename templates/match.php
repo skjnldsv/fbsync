@@ -18,7 +18,7 @@ style('fbsync', 'fbsync');
 // Cache ckeck before list
 $fromCache = $_['facebook']->fromCache();
 // Contacts & friends lists
-$contacts = $_['contacts']->getList();
+$contacts = $_['contacts'];
 $friends = $_['facebook']->getfriends();
 ?>
 

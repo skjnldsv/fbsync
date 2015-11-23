@@ -37,7 +37,7 @@ class FacebookController extends Controller {
 	 * @var Int Friends cache time (24h)
 	 * @var Int Friends cache key
 	 */
-	private $cacheTime = 24*60*60;
+	private $cacheTime = 86400; //24*60*60
 	private $cacheKey = "FBfriends-";
 
 	public function __construct($AppName, IRequest $request, ICache $cache, $userHome){
@@ -50,8 +50,12 @@ class FacebookController extends Controller {
     /**
      * Use and save cookie to do stuff on facebook.
      * Handle the login request.
+	 *
+	 * @var string Url of the request
+	 * @var bool POST or GET
+	 * @var bool FOLLOWLOCATION Enable or not in GET request
      */
-    private function dorequest($url, $post=false) {
+    private function dorequest($url, $post=false, $follow=false) {
 
         $ch = curl_init();
 		
@@ -77,9 +81,12 @@ class FacebookController extends Controller {
                 CURLOPT_RETURNTRANSFER  => 1,
                 CURLOPT_COOKIEFILE      => $this->userHome.$this->cookieName,
                 CURLOPT_USERAGENT       => $this->userAgent,
-                CURLOPT_FOLLOWLOCATION  => 1,
                 CURLOPT_REFERER         => $url
             );
+			// Prevent unwanted redirection
+			if($follow) {
+				$curlConfig[CURLOPT_FOLLOWLOCATION]=1;
+			}
         }
         
         curl_setopt_array($ch, $curlConfig);
@@ -92,6 +99,9 @@ class FacebookController extends Controller {
 
     /**
      * Try to log into Facebook and return results and header (for debug)
+	 * @var string Username
+	 * @var string Password
+	 * @return Array Status of the facebook connexion and the request data
      */
     private function fblogin($user, $pass) {
         // Submit those variables to the server
@@ -131,6 +141,7 @@ class FacebookController extends Controller {
     /**
      * Try to log into Facebook and return results and header (for debug)
 	 * @var bool Ignore cache and force reload
+	 * @return Array Friends with FBID and Names
      */
     public function getfriends($ignoreCache=false) {
 		// try cache
@@ -149,11 +160,11 @@ class FacebookController extends Controller {
 			$getdata = $this->dorequest($url.$page);
 			$html = str_get_html($getdata[1]);
 			if (empty($html)) {
-				return 1;
+				return false;
 			}
 			$main = $html->find('div[id=friends_center_main]', 0);
 			if (empty($main)) {
-				return 2;
+				return false;
 			}
 
 			// 10 per page. Break when next page empty!
@@ -188,9 +199,14 @@ class FacebookController extends Controller {
     /**
      * Get picture for user who disabled the graph api
 	 * @var integer The Facebook ID
+	 * @return string Url of the profile picture
      */
 	public function getPicture_alt($fbid) {
-		$getdata = $this->dorequest("https://m.facebook.com/$fbid");
+		if(!$this->islogged()) {
+			return false;
+		}
+		
+		$getdata = $this->dorequest("https://m.facebook.com/$fbid", false, true);
 		if (empty($getdata[1])) {
 			return false;
 		}
@@ -208,10 +224,46 @@ class FacebookController extends Controller {
 		return $matches2[1][0];
 	}
 	
+
+    /**
+     * Get birthday and format it to the Vcard format
+	 * @var integer The Facebook ID
+	 * @return string Birthday date to Y-m-d format
+     */
+	public function getBirthday($fbid) {
+		if(!$this->islogged()) {
+			return false;
+		}
+		
+		$getdata = $this->dorequest("https://m.facebook.com/profile.php?v=info&id=$fbid");
+		
+		$html = str_get_html($getdata[1]);
+		if (empty($html)) {
+			return false;
+		}
+
+		$birthdayContainer = $html->find('div[title=Birthday]', 0);
+		if (empty($birthdayContainer)) {
+			return false;
+		}
+		
+		$birthday = $birthdayContainer->find('td', 1)->find('div', 0);
+		// Empty or not enough data
+		// EDIT: disabled, better having only month and day than nothing
+		// if (empty($birthday) || date('Y-m-d', $birthday->innertext) == date('Y')) {
+		if (empty($birthday)) {
+			return false;
+		}
+		
+		return date('Y-m-d', strtotime($birthday->innertext));
+	}
+	
 	/**
 	 * Check if logged to facebook
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
+	 *
+	 * @return bool
 	 */
 	public function islogged() {
 		// No cookie set, we don't need to go further

@@ -66,6 +66,15 @@ class ContactsController extends Controller {
 	 * @NoCSRFRequired
 	 * @return JSONResponse
 	 */
+	public function setBirthday($id){
+		return new JSONResponse($this->app->setBirthday($id));
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return JSONResponse
+	 */
 	public function getPhoto($id, $size){
 		return new JSONResponse($this->app->getPhoto($id, $size));
 	}

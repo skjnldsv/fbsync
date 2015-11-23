@@ -22,6 +22,7 @@ return [
 	   ['name' => 'contacts#approxMatch', 'url' => '/approxmatch', 'verb' => 'GET'],
 	   ['name' => 'contacts#updateFBID', 'url' => '/contact/fbid/{id}', 'verb' => 'POST'],
 	   ['name' => 'contacts#setPhoto', 'url' => '/setphoto/{id}', 'verb' => 'GET'],
+	   ['name' => 'contacts#setBirthday', 'url' => '/setbday/{id}', 'verb' => 'GET'],
 	   ['name' => 'contacts#getFbContacts', 'url' => '/FBcontacts', 'verb' => 'GET'],
 	   ['name' => 'contacts#getPhoto', 'url' => '/getphoto/{id}/{size}', 'verb' => 'GET'],
     ]

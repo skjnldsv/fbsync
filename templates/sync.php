@@ -24,10 +24,18 @@ style('fbsync', 'fbsync');
 		<div id="controls" class="clear">
 			<div class="controls-left">
 <!--				<div class="controls_item button last crumb"><h2>Sync profile pictures</h2></div>-->
-				<button id="syncall">Sync all pictures</button>
+				<button id="syncall" class="tooltipped-bottom syncbutton"
+						title="Will sync profile pictures for people matched with one of your facebook friend">
+					Sync pictures
+				</button>
+				<button id="syncbday" class="tooltipped-bottom syncbutton"
+						title="Will sync birthdays only for the contacts who doesn't have one set yet">
+					Sync birthdays
+				</button>
 			</div>
 			<div class="controls-right">
-				<div class="controls_item button" id="syncstatus">Loading...</div>
+				<div class="controls_item button tooltipped-bottom" id="syncstatus"
+					 title="Only the contacts previously matched will be used here">Loading...</div>
 			</div>
 		</div>
 		<div id="loader" class="hidden">

@@ -21,7 +21,7 @@ if(\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus')) {
 		$urlGenerator = $c->query('OCP\IURLGenerator');
 		return [
 			'id' => $c->getAppName(),
-			'name' => $c->query('L10N')->t($c->getAppName()),
+			'name' => $c->getAppName(),
 			'order' => 10,
 			'href' => $urlGenerator->linkToRoute('fbsync.page.index'),
 			'icon' => $urlGenerator->imagePath(FbSyncApp::$appname, 'app.svg'),

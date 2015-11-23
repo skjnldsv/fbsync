@@ -22,8 +22,10 @@ style('fbsync', 'fbsync');
 
 	<div id="app-content" class="main-app-content">
 		<h1>WELCOME !</h1>
+		<br /><br />
 		<div class="main-app-intro">
-			Hi there! Welcome to the facebook profile picture sync application.
+			Hi there! Welcome to the facebook sync application.<br />
+			This app works with the contacts AND the contacts+ app. If contacts+ enabled, it will be used as default. This app doesn't sync both of them simultaneously.
 			<br />
 			<br />
 			Warning! When using the "match similar names" function, <b>remember to check the matched contacts for errors.</b><br />
@@ -35,7 +37,7 @@ style('fbsync', 'fbsync');
 			<ul>
 				<li>In the settings section (bottom left) just login.</li>
 				<li>Go to the match section, and match your friends.</li>
-				<li>Finally, go to the sync section, click "Sync all" and wait!</li>
+				<li>Finally, go to the sync section, click sync and wait!</li>
 			</ul>
 			<br />
 			ENJOY!
