@@ -5,7 +5,7 @@
     <description>A Facebook info sync for owncloud contacts</description>
     <licence>AGPL</licence>
     <author>NOIJN</author>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
     <namespace>FbSync</namespace>
     <category>other</category>
     <require>8</require>

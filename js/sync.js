@@ -10,11 +10,17 @@
 
 var localcontacts = new Array();
 
-function isDoneSyncing(total, syncbutton) {
-	if(total==localcontacts.length) {
+function isDoneSyncing(synced, error, ignored, syncbutton) {
+	var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+" & "+ignored+" ignored)";
+	$('#syncstatus').text(syncstatus);
+	if(synced+error+ignored==localcontacts.length) {
 		$(syncbutton).text('Done !').removeClass('loading');
-		$('#loader').remove();
+		$('#loader').fadeOut();
 		$('#contacts-list').fadeIn();
+		$(".syncbutton").removeProp('disabled');
+		$("#syncpic").text($("#syncpic").data('text')).removeData('text');
+		$("#syncbday").text($("#syncbday").data('text')).removeData('text');
+		
 	}
 }
 
@@ -38,25 +44,20 @@ function syncPictures() {
 			// Error or success?
 			if(response['error']!=false) {
 				error++;
-				$('#syncerror').append(contactdivStart+contactdivError+contactdivEnd);
+				$('#sync-errors > .sync-results').append(contactdivStart+contactdivError+contactdivEnd);
 			} else {
 				synced++;
-				$('#syncsuccess').append(contactdivStart+contactdivEnd);
+				$('#sync-success > .sync-results').append(contactdivStart+contactdivEnd);
 			}
-			$('.tooltipped').tipsy();
-			isDoneSyncing(synced+error, "#syncall");
-		
-			// Update status
-			var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+")";
-			$('#syncstatus').text(syncstatus);
 			
+			// Status
+			$('.tooltipped').tipsy();
+			isDoneSyncing(synced, error, 0,  "#syncpic");
+					
 		}).fail(function() {
 			
 			error++;
-			
-			// Update status
-			var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+")";
-			$('#syncstatus').text(syncstatus);
+			isDoneSyncing(synced, error, 0,  "#syncpic");
 			
 		});
 	})
@@ -76,34 +77,30 @@ function syncBirthdays() {
 				'apps/fbsync/getphoto/{id}/100',
 				{id: response['id']}
 			);
-			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name']+': '+response['birthday'];
+			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name'];
 			var contactdivError = ': '+response['error']
 			var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
 			
 			// Error or success?
 			if(response['birthday'] == true) {
 				ignored++;
+				$('#sync-ignored > .sync-results').append(contactdivStart+contactdivError+contactdivEnd);
 			} else if(response['error']!=false) {
 				error++;
-				$('#syncerror').append(contactdivStart+contactdivError+contactdivEnd);
+				$('#sync-errors > .sync-results').append(contactdivStart+contactdivError+contactdivEnd);
 			} else {
 				synced++;
-				$('#syncsuccess').append(contactdivStart+contactdivEnd);
+				$('#sync-success > .sync-results').append(contactdivStart+': '+response['birthday']+contactdivEnd);
 			}
-			$('.tooltipped').tipsy();
-			isDoneSyncing(synced+error+ignored, "#syncbday");
 			
-			// Update status
-			var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+" & "+ignored+" ignored)";
-			$('#syncstatus').text(syncstatus);
+			// Status
+			$('.tooltipped').tipsy();
+			isDoneSyncing(synced, error, ignored,  "#syncbday");
 			
 		}).fail(function() {
 			
 			error++;
-			
-			// Update status
-			var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+" & "+ignored+" ignored)";
-			$('#syncstatus').text(syncstatus);
+			isDoneSyncing(synced, error, ignored,  "#syncbday");
 			
 		});
 	})
@@ -152,20 +149,27 @@ function syncBirthdays() {
 			localcontacts=response;
 			$('#syncstatus').text(localcontacts.length-1+' contacts loaded')
         }).fail(function(){
-			$('#loading-status').text('Unexpected error...');
+			$('#loader').fadeIn();
+			$('#loading-status').text('Unable to load contacts...');
 			console.log(localcontacts);
 		});
 	
 //----------  BUTTONS ----------	
 		// Toggle matched button
-		$("#syncall").click(function() {
-			$("#syncall").text('Loading...').addClass('loading');
+		$("#syncpic").click(function() {
+			// Save and set new text
+			$("#syncpic").data('text', $("#syncpic").text()).text('Loading...').addClass('loading');
 			$(".syncbutton").prop('disabled',true);
+			// Empty previous sync data
+			$('.sync-results').empty();
 			syncPictures();
 		})
 		$("#syncbday").click(function() {
-			$("#syncbday").text('Loading...').addClass('loading');
+			// Save and set new text
+			$("#syncbday").data('text', $("#syncbday").text()).text('Loading...').addClass('loading');
 			$(".syncbutton").prop('disabled',true);
+			// Empty previous sync data
+			$('.sync-results').empty();
 			syncBirthdays();
 		})
 		

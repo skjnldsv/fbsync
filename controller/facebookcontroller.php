@@ -37,11 +37,10 @@ class FacebookController extends Controller {
 	 * @var Int Friends cache time (24h)
 	 * @var Int Friends cache key
 	 */
-	private $cacheTime = 86400; //24*60*60
 	private $cacheKey = "FBfriends-";
 
-	public function __construct($AppName, IRequest $request, ICache $cache, $userHome){
-		parent::__construct($AppName, $request);
+	public function __construct($AppName, ICache $cache=null, $userHome){
+		parent::__construct($AppName);
 		$this->cache = $cache;
 		$this->userHome = $userHome;
 		$this->cacheKey = $cacheKey.substr(md5($this->userHome), 0, 8);
@@ -144,13 +143,17 @@ class FacebookController extends Controller {
 	 * @return Array Friends with FBID and Names
      */
     public function getfriends($ignoreCache=false) {
-		// try cache
-		$cachedFriends = json_decode($this->cache->get($this->cacheKey), true);
-		if(!empty($cachedFriends) && is_array($cachedFriends) && !$ignoreCache) {
-			return $cachedFriends;
-			
-		} else if($this->islogged()) {
-			$this->cache->remove($this->cacheKey);
+		
+		// try cache if defined
+		if($this->cache) {
+			$cachedFriends = json_decode($this->cache->get($this->cacheKey), true);
+			if(!empty($cachedFriends) && is_array($cachedFriends) && !$ignoreCache) {
+				return $cachedFriends;
+
+			}
+		}
+		
+		if($this->islogged()) {
 
 			$friends = array();
 			$page=0;
@@ -183,10 +186,13 @@ class FacebookController extends Controller {
 				$main = $html->find('div[id=friends_center_main]', 0);
 			}
 			\OCP\Util::writeLog('fbsync', count($friends)." friends cached", \OCP\Util::INFO);
+			
 			// Alphabetical order
 			asort($friends);
-			// To cache
-			$this->cache->set($this->cacheKey, json_encode($friends), $this->cacheTime);
+			
+			// To cache if defined
+			if($this->cache)
+				$this->cache->set($this->cacheKey, json_encode($friends));
 			
 			return $friends;
 			
@@ -303,8 +309,12 @@ class FacebookController extends Controller {
 	 * @NoAdminRequired
 	 */
 	public function fromCache() {
-		$cachedFriends = json_decode($this->cache->get($this->cacheKey), true);
-		return (!empty($cachedFriends) && is_array($cachedFriends));
+		if($this->cache) {
+			$cachedFriends = json_decode($this->cache->get($this->cacheKey), true);
+			return (!empty($cachedFriends) && is_array($cachedFriends));
+		} else {
+			return false;
+		}
 	}
 
 }

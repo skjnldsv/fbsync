@@ -22,7 +22,7 @@ $contacts = $_['contacts'];
 $friends = $_['facebook']->getfriends();
 ?>
 
-<div id="app">
+<div id="app" class="fbsync">
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>
 		<?php print_unescaped($this->inc('part.settings')); ?>

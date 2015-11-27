@@ -40,6 +40,7 @@ class PageController extends Controller {
 
     /**
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
 	 */
 	public function index() {
 		$params = [];
@@ -48,6 +49,7 @@ class PageController extends Controller {
 	
     /**
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
 	 */
 	private function error($error) {
 		$params = ['error' => $error];
@@ -56,6 +58,7 @@ class PageController extends Controller {
 
 	/**
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
 	 */
 	public function match() {
 		$contactsList = $this->contacts->getList();
@@ -71,6 +74,7 @@ class PageController extends Controller {
     
     /**
 	 * @NoCSRFRequired
+	 * @NoAdminRequired
 	 */
 	public function sync() {
 		$contactsList = $this->contacts->getList();

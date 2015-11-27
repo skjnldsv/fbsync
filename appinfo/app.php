@@ -32,3 +32,8 @@ if(\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus')) {
 	$msg = 'Can not enable the FBSync app because the Contacts App is disabled.';
 	\OCP\Util::writeLog('fbsync', $msg, \OCP\Util::ERROR);
 }
+
+/**
+* Cron
+*/
+//\OC::$server->getJobList()->add('OCA\FbSync\Appinfo\Jobs');

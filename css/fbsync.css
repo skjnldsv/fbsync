@@ -43,6 +43,11 @@
 }
 
 /* ---- STATUS ---- */
+.settings-button {
+	position: relative;
+    z-index: 50;
+    background-color: transparent !important;
+}
 #login-status {
     position: absolute;
     top: 0;
@@ -127,9 +132,20 @@
 .sync-contact {
 	display: inline-block;
 	margin: 10px;
+	height: 100px;
+    width: 100px;
 }
-#syncsuccess, #syncerror {
+.sync-results-container {
 	padding: 20px;
+}
+.sync-results-container h2 {
+	border-bottom: 1px solid rgba(120,120,120,0.5);
+    margin-right: 80%;
+	padding-left: 5px;
+}
+.sync-results {
+	padding-top: 10px;
+/*	text-align: center;*/
 }
 
 /* ---- LOADER (@github.com/tobiasahlin/SpinKit) ---- */

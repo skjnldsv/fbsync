@@ -1,6 +1,15 @@
+1.4.0:
+ - Improved settings section (login status)
+ - Added Sync all button
+ - Improved some css
+ - Added the possibillity to run sync after another
+ - More cleanup (it never stop!)
+ - Fixed non admin acount access (bug #5)
+ - Improved some code
+
 1.3.0:
  - Error messages
- - Cache duration setting fix (fixed #3 & #4)
+ - Cache duration setting fix (fixed #4)
  - Added birthday sync 
  - More cleanup
  - Improved code

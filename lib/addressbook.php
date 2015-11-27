@@ -50,7 +50,7 @@ class Addressbook {
 	 * @param boolean $shared Whether to also return shared addressbook. Defaults to true.
 	 * @return array or false.
 	 */
-	public static function all($uid, $active = false, $shared = true, $sync = false) {
+	public static function all($uid, $active = false, $sync = false) {
 		$values = array($uid);
 		$active_where = '';
 		if ($active) {
@@ -79,16 +79,6 @@ class Addressbook {
 		while( $row = $result->fetchRow()) {
 			$row['permissions'] = \OCP\PERMISSION_ALL;
 			$addressbooks[] = $row;
-		}
-
-		if($shared === true) {
-			$sharedAddressbooks = \OCP\Share::getItemsSharedWith(App::$ShareAddressBook, 1);
-			// workaround for https://github.com/owncloud/core/issues/2814
-			foreach($sharedAddressbooks as $sharedAddressbook) {
-				if(isset($sharedAddressbook['id']) && self::find($sharedAddressbook['id'])) {
-					$addressbooks[] = $sharedAddressbook;
-				}
-			}
 		}
 		
 		// Because contacts app doesnt use their own sql rows...

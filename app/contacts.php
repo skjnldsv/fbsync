@@ -16,7 +16,7 @@ use \OCA\FbSync\Controller\FacebookController;
 use \OCA\FbSync\VCard;
 use \OCA\FbSync\Addressbook;
 use Sabre\VObject;
-use OCA\FbSync\AppInfo\Application as App;
+use \OCA\FbSync\AppInfo\Application as App;
 
 /**
  * Class Contacts
@@ -47,7 +47,7 @@ class Contacts {
 		$activeAddressbooks = Addressbook::activeIds();
 		$contacts = Array();
 		foreach($activeAddressbooks as $activeAddressbook) {
-			foreach(VCard::all([$activeAddressbook[0]]) as $contact) {
+			foreach(VCard::all($activeAddressbook) as $contact) {
 				$contacts[$contact['id']] = new Contact(
 					$this->contactsManager,
 					$this->cache,

@@ -52,7 +52,6 @@ class Application extends App {
 		} else {
 			$this->user = $user;
 		}
-		\OCP\Util::writeLog('fbsync', $this->user, \OCP\Util::INFO);
 		
 		
 		// Contact+ compatibility
@@ -86,9 +85,18 @@ class Application extends App {
 		$container->registerService('FacebookController', function(IContainer $c) {
 			return new FacebookController(
 				$c->query('AppName'),
-				$c->query('OCP\IRequest'),
 				$c->query('OCP\ICache'),
 				$c->query('userHome')
+			);
+		});
+
+
+		/**
+		 * Contacts
+		 */
+		$container->registerService('Contacts', function(IContainer $c) {
+			return new Contacts(
+				$c->query('FacebookController')
 			);
 		});
 		
@@ -103,24 +111,6 @@ class Application extends App {
 				$c->query('FacebookController')
 			);
 		});
-
-
-		/**
-		 * Contacts
-		 */
-		$container->registerService('Contacts', function(IContainer $c) {
-			return new Contacts(
-				$c->query('OCP\Contacts\IManager'),
-				$c->query('OCP\ICache'),
-				$c->query('FacebookController'),
-				$c->query('ContactContainer')
-			);
-		});
-
-		/**
-		* Cron
-		*/
-	//	\OC::$server->getJobList()->add('\OCA\FbSync\Controller\FacebookController', 'reload');
 
 
 	}

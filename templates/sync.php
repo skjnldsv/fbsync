@@ -14,7 +14,7 @@ script('fbsync', 'sync');
 style('fbsync', 'fbsync');
 ?>
 
-<div id="app">
+<div id="app" class="fbsync">
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>
 		<?php print_unescaped($this->inc('part.settings')); ?>
@@ -24,7 +24,7 @@ style('fbsync', 'fbsync');
 		<div id="controls" class="clear">
 			<div class="controls-left">
 <!--				<div class="controls_item button last crumb"><h2>Sync profile pictures</h2></div>-->
-				<button id="syncall" class="tooltipped-bottom syncbutton"
+				<button id="syncpic" class="tooltipped-bottom syncbutton"
 						title="Will sync profile pictures for people matched with one of your facebook friend">
 					Sync pictures
 				</button>
@@ -49,8 +49,9 @@ style('fbsync', 'fbsync');
 			<div id="loading-status">Syncing...</div>
 		</div>
 		<div id="contacts-list" class="hidden">
-			<div id="syncsuccess" class="clear"><h2>Successful syncs</h2><br></div>
-			<div id="syncerror" class="clear"><h2>Syncs errors</h2><br></div>
+			<div id="sync-success" class="clear sync-results-container"><h2>Success</h2><div class="sync-results"></div></div>
+			<div id="sync-errors" class="clear sync-results-container"><h2>Errors</h2><div class="sync-results"></div></div>
+			<div id="sync-ignored" class="clear sync-results-container"><h2>Ignored</h2><div class="sync-results"></div></div>
 		</div>
 	</div>
 </div>
