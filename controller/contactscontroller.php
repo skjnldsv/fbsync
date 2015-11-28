@@ -102,6 +102,24 @@ class ContactsController extends Controller {
 	 * @NoCSRFRequired
 	 * @return JSONResponse
 	 */
+	public function deletePhotos(){
+		return new JSONResponse($this->app->deletePhotos());
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return JSONResponse
+	 */
+	public function deleteBdays(){
+		return new JSONResponse($this->app->deleteBdays());
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return JSONResponse
+	 */
 	public function updateFBID($id, $fbid){
 		// Delete or set?
 		if(is_null($fbid)) {

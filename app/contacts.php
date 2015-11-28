@@ -117,6 +117,38 @@ class Contacts {
 		return $idList;
 	}
 	
+	/**
+	 * Delete all the profile pictures
+	 * @NoAdminRequired
+	 */
+	public function deletePhotos() {
+		$contacts = $this->getList();
+		$count = 0;
+		foreach($contacts as $contact) {
+			if(isset($contact->vcard->PHOTO)) {
+				$contact->delPhoto();
+				$count++;
+			}
+		}
+		return $count;
+	}
+	
+	/**
+	 * Delete all the birthdays
+	 * @NoAdminRequired
+	 */
+	public function deleteBdays() {
+		$contacts = $this->getList();
+		$count = 0;
+		foreach($contacts as $contact) {
+			if(isset($contact->vcard->BDAY)) {
+				$contact->delBday();
+				$count++;
+			}
+		}
+		return $count;
+	}
+	
 	
 	/**
 	 * Match exacts name

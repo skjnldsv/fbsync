@@ -1,3 +1,10 @@
+1.5.0:
+ - Added "remove all pictures" button
+ - Added "remove all birthdays" button
+ - Documentation
+ - Sync page design
+ - Birthday sync fix (bug #6)
+
 1.4.0:
  - Improved settings section (login status)
  - Added Sync all button

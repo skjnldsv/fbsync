@@ -32,6 +32,14 @@ style('fbsync', 'fbsync');
 						title="Will sync birthdays only for the contacts who doesn't have one set yet">
 					Sync birthdays
 				</button>
+				<button id="delpictures" class="tooltipped-bottom syncbutton"
+						title="WARNING! Will remove all the profiles pictures on your selected addressbook(s)">
+					Remove all pictures
+				</button>
+				<button id="delbdays" class="tooltipped-bottom syncbutton"
+						title="WARNING! Will delete all the birthdays on your selected addressbook(s)">
+					Remove all birthdays
+				</button>
 			</div>
 			<div class="controls-right">
 				<div class="controls_item button tooltipped-bottom" id="syncstatus"

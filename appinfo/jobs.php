@@ -8,6 +8,7 @@
  * @author NOIJN <fremulon@protonmail.com>
  * @copyright NOIJN 2015
  */
+
 namespace OCA\FbSync\Appinfo;
 
 use OC\BackgroundJob\TimedJob;

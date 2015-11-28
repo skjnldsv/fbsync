@@ -105,7 +105,8 @@ class Contact {
 						"name" => $this->getName(),
 						"backend" => $this->backend,
 						"addressbook" => $this->addressbook,
-						"img" => $imgAltUrl
+						"img" => $imgAltUrl,
+						"photo" => isset($this->vcard->PHOTO)
 					);
 				} else {
 					$imgAlt = file_get_contents($imgAltUrl);
@@ -119,7 +120,8 @@ class Contact {
 							"name" => $this->getName(),
 							"backend" => $this->backend,
 							"addressbook" => $this->addressbook,
-							"img" => $imgAltUrl
+							"img" => $imgAltUrl,
+							"photo" => isset($this->vcard->PHOTO)
 						);
 					}
 				}
@@ -141,7 +143,8 @@ class Contact {
 				"name" => $this->getName(),
 				"name" => $this->getName(),
 				"backend" => $this->backend,
-				"addressbook" => $this->addressbook
+				"addressbook" => $this->addressbook,
+				"photo" => isset($this->vcard->PHOTO)
 			);
 		}
 	}
@@ -159,7 +162,8 @@ class Contact {
 				"name" => $this->getName(),
 				"name" => $this->getName(),
 				"backend" => $this->backend,
-				"addressbook" => $this->addressbook
+				"addressbook" => $this->addressbook,
+				"photo" => isset($this->vcard->PHOTO)
 			);
 		} else if(isset($this->vcard->BDAY)) {
 			return Array(
@@ -169,21 +173,24 @@ class Contact {
 				"name" => $this->getName(),
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
+				"photo" => isset($this->vcard->PHOTO),
 				"birthday" => true
 			);
 		}
 		// All good, let's do it
 		$birthday = $this->fbController->getBirthday($this->getFBID());
-		if(!birthday) {
+		if(!$birthday) {
 			return Array(
 				"error" => 'No birthday found',
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
 				"backend" => $this->backend,
-				"addressbook" => $this->addressbook
+				"addressbook" => $this->addressbook,
+				"photo" => isset($this->vcard->PHOTO)
 			);
 		} else {
+			$birthday = date('Y-m-d', strtotime($birthday));
 			$this->vcard->add('BDAY', $birthday);
 			$this->save();
 			return Array(
@@ -193,6 +200,7 @@ class Contact {
 				"name" => $this->getName(),
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
+				"photo" => isset($this->vcard->PHOTO),
 				"birthday" => $birthday
 			);
 		}
@@ -256,6 +264,22 @@ class Contact {
 	 */
 	public function delFBID($fbid) {
 		return $this->updateFBID();
+	}
+	
+	/**
+	 * Delete Photo
+	 */
+	public function delPhoto() {
+		unset($this->vcard->PHOTO);
+		return $this->save();
+	}
+	
+	/**
+	 * Delete Birthday
+	 */
+	public function delBday() {
+		unset($this->vcard->BDAY);
+		return $this->save();
 	}
 	
 	/**

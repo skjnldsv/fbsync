@@ -25,5 +25,7 @@ return [
 	   ['name' => 'contacts#setBirthday', 'url' => '/setbday/{id}', 'verb' => 'GET'],
 	   ['name' => 'contacts#getFbContacts', 'url' => '/FBcontacts', 'verb' => 'GET'],
 	   ['name' => 'contacts#getPhoto', 'url' => '/getphoto/{id}/{size}', 'verb' => 'GET'],
+	   ['name' => 'contacts#deletePhotos', 'url' => '/contacts/delphotos', 'verb' => 'GET'],
+	   ['name' => 'contacts#deleteBdays', 'url' => '/contacts/delbdays', 'verb' => 'GET'],
     ]
 ];

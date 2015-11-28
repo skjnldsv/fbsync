@@ -249,7 +249,7 @@ class FacebookController extends Controller {
 		}
 
 		$birthdayContainer = $html->find('div[title=Birthday]', 0);
-		if (empty($birthdayContainer)) {
+		if (is_null($birthdayContainer)) {
 			return false;
 		}
 		
@@ -257,11 +257,11 @@ class FacebookController extends Controller {
 		// Empty or not enough data
 		// EDIT: disabled, better having only month and day than nothing
 		// if (empty($birthday) || date('Y-m-d', $birthday->innertext) == date('Y')) {
-		if (empty($birthday)) {
+		if (is_null($birthday)) {
 			return false;
 		}
 		
-		return date('Y-m-d', strtotime($birthday->innertext));
+		return $birthday->innertext;
 	}
 	
 	/**

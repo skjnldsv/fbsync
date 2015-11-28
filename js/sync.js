@@ -10,18 +10,43 @@
 
 var localcontacts = new Array();
 
-function isDoneSyncing(synced, error, ignored, syncbutton) {
-	var syncstatus = synced+" contact"+(synced>1?'s':'')+" synced ("+error+" error"+(error>1?'s':'')+" & "+ignored+" ignored)";
+function isDoneSyncing(synced, error, ignored, total, syncbutton) {
+	var syncstatus = synced+" contact"+(synced>1?'s':'')+" updated ("+error+" error"+(error>1?'s':'')+" & "+ignored+" ignored)";
 	$('#syncstatus').text(syncstatus);
-	if(synced+error+ignored==localcontacts.length) {
+	if(synced+error+ignored >= total) {
 		$(syncbutton).text('Done !').removeClass('loading');
 		$('#loader').fadeOut();
 		$('#contacts-list').fadeIn();
 		$(".syncbutton").removeProp('disabled');
-		$("#syncpic").text($("#syncpic").data('text')).removeData('text');
-		$("#syncbday").text($("#syncbday").data('text')).removeData('text');
-		
+		$(syncbutton).text($(syncbutton).data('text')).removeData('text');		
 	}
+}
+
+function delPictures() {
+	$('#loader').fadeIn();
+	
+	$.get(OC.generateUrl('apps/fbsync/contacts/delphotos'))
+		.done(function(response) {
+			// Status
+			$('.tooltipped').tipsy();
+			isDoneSyncing(response, 0, 0, 0, "#delpictures");
+		}).fail(function() {
+			error++;
+			isDoneSyncing(0, response, 0, 0, "#delpictures");
+		});
+}
+
+function delBdays() {
+	$('#loader').fadeIn();
+	
+	$.get(OC.generateUrl('apps/fbsync/contacts/delbdays'))
+		.done(function(response) {
+			// Status
+			$('.tooltipped').tipsy();
+			isDoneSyncing(response, 0, 0, 0, "#delbdays");
+		}).fail(function() {
+			isDoneSyncing(0, response, 0, 0, "#delbdays");
+		});
 }
 
 function syncPictures() {
@@ -31,15 +56,20 @@ function syncPictures() {
 	var synced = 0;
 	var error = 0;
 	localcontacts.forEach(function(id, index, array){
-		$.get(OC.generateUrl('apps/fbsync/setphoto/'+id)).done(function(response) {
+		$.get(OC.generateUrl('apps/fbsync/setphoto/'+id))
+			.done(function(response) {
 
 			var url = OC.generateUrl(
 				'apps/fbsync/getphoto/{id}/100',
 				{id: response['id']}
 			);
 			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name'];
-			var contactdivError = ': '+response['error']
-			var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+			var contactdivError = ': '+response['error'];
+			if(response['photo'] == true) {
+				var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+			} else {
+				var contactdivEnd = '"></div>';
+			}
 
 			// Error or success?
 			if(response['error']!=false) {
@@ -52,12 +82,12 @@ function syncPictures() {
 			
 			// Status
 			$('.tooltipped').tipsy();
-			isDoneSyncing(synced, error, 0,  "#syncpic");
+			isDoneSyncing(synced, error, 0, localcontacts.length, "#syncpic");
 					
 		}).fail(function() {
 			
 			error++;
-			isDoneSyncing(synced, error, 0,  "#syncpic");
+			isDoneSyncing(synced, error, 0, localcontacts.length, "#syncpic");
 			
 		});
 	})
@@ -71,15 +101,20 @@ function syncBirthdays() {
 	var error = 0;
 	var ignored = 0;
 	localcontacts.forEach(function(id, index, array){
-		$.get(OC.generateUrl('apps/fbsync/setbday/'+id)).done(function(response) {
+		$.get(OC.generateUrl('apps/fbsync/setbday/'+id))
+			.done(function(response) {
 
 			var url = OC.generateUrl(
 				'apps/fbsync/getphoto/{id}/100',
 				{id: response['id']}
 			);
 			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name'];
-			var contactdivError = ': '+response['error']
-			var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+			var contactdivError = ': '+response['error'];
+			if(response['photo'] == true) {
+				var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+			} else {
+				var contactdivEnd = '"></div>';
+			}
 			
 			// Error or success?
 			if(response['birthday'] == true) {
@@ -95,12 +130,12 @@ function syncBirthdays() {
 			
 			// Status
 			$('.tooltipped').tipsy();
-			isDoneSyncing(synced, error, ignored,  "#syncbday");
+			isDoneSyncing(synced, error, ignored, localcontacts.length, "#syncbday");
 			
 		}).fail(function() {
 			
 			error++;
-			isDoneSyncing(synced, error, ignored,  "#syncbday");
+			isDoneSyncing(synced, error, ignored, localcontacts.length, "#syncbday");
 			
 		});
 	})
@@ -171,6 +206,26 @@ function syncBirthdays() {
 			// Empty previous sync data
 			$('.sync-results').empty();
 			syncBirthdays();
+		})
+		$("#delpictures").click(function() {
+			if (confirm("Are you sure ?!")) {
+				// Save and set new text
+				$("#delpictures").data('text', $("#delpictures").text()).text('Loading...').addClass('loading');
+				$(".syncbutton").prop('disabled',true);
+				// Empty previous sync data
+				$('.sync-results').empty();
+				delPictures();
+			}
+		})
+		$("#delbdays").click(function() {
+			if (confirm("Are you sure ?!")) {
+				// Save and set new text
+				$("#delbdays").data('text', $("#delbdays").text()).text('Loading...').addClass('loading');
+				$(".syncbutton").prop('disabled',true);
+				// Empty previous sync data
+				$('.sync-results').empty();
+				delBdays();
+			}
 		})
 		
 	});
