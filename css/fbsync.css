@@ -254,8 +254,7 @@
 	width: 100%;
 }
 .localcontact .name {
-    max-width: 170px;
-	min-width: 100px;
+	width: 170px;
     overflow: hidden;
     white-space: nowrap;
     display: block;
@@ -273,9 +272,9 @@
     height: 20px;
     padding: 0;
     margin: 0px;
-    max-width: 170px;
-	min-width: 100px;
+    width: 170px;
 	border-radius: 0;
+	display: block;
 }
 .sync-contact {
 	display: inline-block;
