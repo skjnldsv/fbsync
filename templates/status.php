@@ -16,7 +16,7 @@ style('fbsync', 'fbsync');
 ?>
 
 <div id="app" class="fbsync">
-	<div id="app-navigation">
+	<div id="app-navigation" class="main-app-nav">
 		<?php print_unescaped($this->inc('part.navigation')); ?>
 		<?php print_unescaped($this->inc('part.settings')); ?>
 	</div>
