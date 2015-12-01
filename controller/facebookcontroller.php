@@ -138,7 +138,7 @@ class FacebookController extends Controller {
     }
 
     /**
-     * Try to log into Facebook and return results and header (for debug)
+     * Retrieve the facebook friends list
 	 * @var bool Ignore cache and force reload
 	 * @return Array Friends with FBID and Names
      */
@@ -166,7 +166,7 @@ class FacebookController extends Controller {
 				return false;
 			}
 			$main = $html->find('div[id=friends_center_main]', 0);
-			if (empty($main)) {
+			if (is_null($main)) {
 				return false;
 			}
 
@@ -177,7 +177,7 @@ class FacebookController extends Controller {
 					$re = "/uid=([0-9]{1,20})/";
 					preg_match($re, $friend->href, $matches);
 					// $friends[fbid]=name
-					$friends[(int)$matches[1]]=$friend->innertext;
+					$friends[(int)$matches[1]]=html_entity_decode($friend->innertext, ENT_QUOTES);
 				}
 				$page++;
 
@@ -185,14 +185,15 @@ class FacebookController extends Controller {
 				$html = str_get_html($getdata[1]);
 				$main = $html->find('div[id=friends_center_main]', 0);
 			}
-			\OCP\Util::writeLog('fbsync', count($friends)." friends cached", \OCP\Util::INFO);
 			
 			// Alphabetical order
 			asort($friends);
 			
 			// To cache if defined
-			if($this->cache)
+			if($this->cache) {
 				$this->cache->set($this->cacheKey, json_encode($friends));
+				\OCP\Util::writeLog('fbsync', count($friends)." friends cached", \OCP\Util::INFO);
+			}
 			
 			return $friends;
 			
@@ -200,6 +201,55 @@ class FacebookController extends Controller {
 			return false;
 		}
     }
+
+    /**
+     * Retrieve the 2 first pages of your friends suggestions (24*2 peoples)
+	 * Increasing to 3 or more reduce the suggestion relevance
+	 * @return Array Friends with FBID and Names
+     */
+    public function getsuggestedFriends() {
+		
+		if($this->islogged()) {
+			
+			$url = 'https://m.facebook.com/friends/center/suggestions/';
+			$friends=Array();
+			$friendLinkFilter = "[href^=/friends/hovercard]";
+			
+			$getdata = $this->dorequest($url.$page);
+			$html = str_get_html($getdata[1]);
+			if (empty($html)) {
+				return false;
+			}
+			$main = $html->find('div[id=friends_center_main]', 0);
+			if (is_null($main)) {
+				return false;
+			}
+
+			// 2 first pages
+			for($count=0; $count < 2; $count++) {
+				foreach($main->find('a'.$friendLinkFilter) as $friend) {
+					// FB ID
+					$re = "/uid=([0-9]{1,20})/";
+					preg_match($re, $friend->href, $matches);
+					// $friends[fbid]=name
+					$friends[(int)$matches[1]]=html_entity_decode($friend->innertext, ENT_QUOTES);
+				}
+				// Let's get the next page link
+				$re = "/<a href=\"(\\/friends\\/center\\/suggestions[0-9a-z\\/\\?=&;_]{0,60})#friends_center_main\">/mi"; 
+				preg_match_all($re, html_entity_decode($main->innertext, ENT_QUOTES), $matches);
+				$url = $matches[1][0];
+				$getdata = $this->dorequest('https://m.facebook.com'.$url);
+				$html = str_get_html($getdata[1]);
+				$main = $html->find('div[id=friends_center_main]', 0);
+			}
+			
+			// No sort because we want to keep the suggestion order
+			return $friends;
+			
+		} else {
+			return false;
+		}
+	}
 	
 
     /**
@@ -244,7 +294,7 @@ class FacebookController extends Controller {
 		$getdata = $this->dorequest("https://m.facebook.com/profile.php?v=info&id=$fbid");
 		
 		$html = str_get_html($getdata[1]);
-		if (empty($html)) {
+		if (is_null($html)) {
 			return false;
 		}
 

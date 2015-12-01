@@ -96,25 +96,6 @@ class Addressbook {
 		
 		return $addressbooks;
 	}
-    
-	
-	public static function getCountCardsAddressbook($uid){
-		if(is_null($uid)) {
-			$uid = \OCP\USER::getUser();
-		}
-		$activeaddressbooks = self::all($uid);
-		$returnArray=array();
-		foreach($activeaddressbooks as $addressbook) {
-			$sql="SELECT COUNT(id) AS COUNTER FROM `".App::$ContactsTable."` WHERE `addressbookid`=? AND `component`= ?";
-			$stmt = \OCP\DB::prepare($sql);
-			$result = $stmt->execute(array($addressbook['id'],'VCARD'));
-			$row = $result->fetchRow();
-			$returnArray[$addressbook['id']]=$row['COUNTER'];
-			//\OCP\Util::writeLog(App::$appname,'COUNTER: '.$row['COUNTER'], \OCP\Util::DEBUG);
-		}
-		
-		return $returnArray;
-	}
 	
 	/**
 	 * @brief Get active addressbook IDs for a user.
@@ -138,35 +119,7 @@ class Addressbook {
 		return $ids;
 	}
 
-	/**
-	 * @brief Returns the list of active addressbooks for a specific user.
-	 * @param string $uid
-	 * @return array
-	 */
-	public static function active($uid) {
-		return self::all($uid, true);
-	}
-
-    public static function checkIfExist($sDisplayname){
-    	$stmt = \OCP\DB::prepare( 'SELECT `id` FROM `'.App::$AddrBookTable.'` WHERE `displayname` = ? AND `userid` = ?' );
-		$result = $stmt->execute(array($sDisplayname,\OCP\USER::getUser()));
-		$row = $result->fetchRow();
-		if(!$row) {
-			return false;
-		}else{
-			return $row['id'];
-		}
-    }
-
-	/**
-	 * @brief Returns the list of addressbooks for a principal (DAV term of user)
-	 * @param string $principaluri
-	 * @return array
-	 */
-	public static function allWherePrincipalURIIs($principaluri) {
-		$uid = self::extractUserID($principaluri);
-		return self::all($uid,true,true,true);
-	}
+   
 
 	/**
 	 * @brief Gets the data of one address book
@@ -206,156 +159,6 @@ class Addressbook {
 	}
 
 	/**
-	 * @brief Adds default address book
-	 * @return $id ID of the newly created addressbook or false on error.
-	 */
-	public static function addDefault($uid = null) {
-		if(is_null($uid)) {
-			$uid = \OCP\USER::getUser();
-		}
-		$id = self::add($uid, 'Contacts', 'Default Address Book');
-		if($id !== false) {
-			self::setActive($id, true);
-		}
-		return $id;
-	}
-
-	/**
-	 * @brief Creates a new address book
-	 * @param string $userid
-	 * @param string $name
-	 * @param string $description
-	 * @return insertid
-	 */
-	public static function add($uid,$name,$description='') {
-		try {
-			$stmt = \OCP\DB::prepare( 'SELECT `uri` FROM `'.App::$AddrBookTable.'` WHERE `userid` = ? ' );
-			$result = $stmt->execute(array($uid));
-			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
-				return false;
-			}
-		} catch(\Exception $e) {
-			\OCP\Util::writeLog(App::$appname, __METHOD__ . ' exception: ' . $e->getMessage(), \OCP\Util::ERROR);
-			\OCP\Util::writeLog(App::$appname, __METHOD__ . ' uid: ' . $uid, \OCP\Util::DEBUG);
-			return false;
-		}
-		$uris = array();
-		while($row = $result->fetchRow()) {
-			$uris[] = $row['uri'];
-		}
-
-		$uri = self::createURI($name, $uris );
-		try {
-			$stmt = \OCP\DB::prepare( 'INSERT INTO `'.App::$AddrBookTable.'` (`userid`,`displayname`,`uri`,`description`,`ctag`) VALUES(?,?,?,?,?)' );
-			$result = $stmt->execute(array($uid,$name,$uri,$description,1));
-			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
-				return false;
-			}
-		} catch(\Exception $e) {
-			\OCP\Util::writeLog(App::$appname, __METHOD__.', exception: '.$e->getMessage(), \OCP\Util::ERROR);
-			\OCP\Util::writeLog(App::$appname, __METHOD__.', uid: '.$uid, \OCP\Util::DEBUG);
-			return false;
-		}
-
-		return \OCP\DB::insertid(App::$AddrBookTable);
-	}
-
-	/**
-	 * @brief Creates a new address book from the data sabredav provides
-	 * @param string $principaluri
-	 * @param string $uri
-	 * @param string $name
-	 * @param string $description
-	 * @return insertid or false
-	 */
-	public static function addFromDAVData($principaluri, $uri, $name, $description) {
-		$uid = self::extractUserID($principaluri);
-
-		try {
-			$stmt = \OCP\DB::prepare('INSERT INTO `'.App::$AddrBookTable.'` '
-				. '(`userid`,`displayname`,`uri`,`description`,`ctag`) VALUES(?,?,?,?,?)');
-			$result = $stmt->execute(array($uid, $name, $uri, $description, 1));
-			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
-				return false;
-			}
-		} catch(\Exception $e) {
-			\OCP\Util::writeLog(App::$appname, __METHOD__.', exception: ' . $e->getMessage(), \OCP\Util::ERROR);
-			\OCP\Util::writeLog(App::$appname, __METHOD__.', uid: ' . $uid, \OCP\Util::DEBUG);
-			\OCP\Util::writeLog(App::$appname, __METHOD__.', uri: ' . $uri, \OCP\Util::DEBUG);
-			return false;
-		}
-
-		return \OCP\DB::insertid(App::$AddrBookTable);
-	}
-
-	/**
-	 * @brief Edits an addressbook
-	 * @param integer $id
-	 * @param string $name
-	 * @param string $description
-	 * @return boolean
-	 */
-	public static function edit($id,$name,$description) {
-		// Need these ones for checking uri
-		$addressbook = self::find($id);
-		if ($addressbook['userid'] != \OCP\User::getUser() && !\OC_Group::inGroup(OCP\User::getUser(), 'admin')) {
-			$sharedAddressbook = \OCP\Share::getItemSharedWithBySource(App::$ShareAddressBook,App::$ShareAddressBookPREFIX. $id);
-			if (!$sharedAddressbook || !($sharedAddressbook['permissions'] & \OCP\PERMISSION_UPDATE)) {
-				throw new \Exception(
-					'You do not have the permissions to update this addressbook.'
-				);
-			}
-		}
-		if(is_null($name)) {
-			$name = $addressbook['name'];
-		}
-		if(is_null($description)) {
-			$description = $addressbook['description'];
-		}
-
-		try {
-			$stmt = \OCP\DB::prepare('UPDATE `'.App::$AddrBookTable.'` SET `displayname`=?,`description`=?, `ctag`=`ctag`+1 WHERE `id`=?');
-			$result = $stmt->execute(array($name,$description,$id));
-			if (\OCP\DB::isError($result)) {
-				\OCP\Util::writeLog(App::$appname, __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
-				throw new \Exception(
-					'There was an error updating the addressbook.'
-				);
-			}
-		} catch(\Exception $e) {
-			\OCP\Util::writeLog(App::$appname, __METHOD__ . ', exception: ' . $e->getMessage(), \OCP\Util::ERROR);
-			\OCP\Util::writeLog(App::$appname, __METHOD__ . ', id: ' . $id, \OCP\Util::DEBUG);
-			throw new \Exception(
-				'There was an error updating the addressbook.'
-			);
-		}
-
-		return true;
-	}
-
-	/**
-	 * @brief Activates an addressbook
-	 * @param integer $id
-	 * @param boolean $active
-	 * @return boolean
-	 */
-	public static function setActive($id,$active) {
-		$sql = 'UPDATE `'.App::$AddrBookTable.'` SET `active` = ? WHERE `id` = ?';
-
-		try {
-			$stmt = \OCP\DB::prepare($sql);
-			$stmt->execute(array(intval($active), $id));
-			return true;
-		} catch(\Exception $e) {
-			\OCP\Util::writeLog(App::$appname, __METHOD__ . ', exception for ' . $id.': ' . $e->getMessage(), \OCP\Util::ERROR);
-			return false;
-		}
-	}
-
-	/**
 	 * @brief Checks if an addressbook is active.
 	 * @param integer $id ID of the address book.
 	 * @return boolean
@@ -375,45 +178,6 @@ class Addressbook {
 			\OCP\Util::writeLog(App::$appname, __METHOD__.', exception: ' . $e->getMessage(), \OCP\Util::ERROR);
 			return false;
 		}
-	}
-
-	/**
-	 * @brief Updates ctag for addressbook
-	 * @param integer $id
-	 * @return boolean
-	 */
-	public static function touch($id) {
-		$stmt = \OCP\DB::prepare( 'UPDATE `'.App::$AddrBookTable.'` SET `ctag` = ? + 1 WHERE `id` = ?' );
-		$ctag = time();
-		$stmt->execute(array($ctag, $id));
-
-		return true;
-	}
-
-	/**
-	 * @brief Creates a URI for Addressbook
-	 * @param string $name name of the addressbook
-	 * @param array  $existing existing addressbook URIs
-	 * @return string new name
-	 */
-	public static function createURI($name,$existing) {
-		$name = str_replace(' ', '_', strtolower($name));
-		$newname = $name;
-		$i = 1;
-		while(in_array($newname, $existing)) {
-			$newname = $name.$i;
-			$i = $i + 1;
-		}
-		return $newname;
-	}
-
-	/**
-	 * @brief gets the userid from a principal path
-	 * @return string
-	 */
-	public static function extractUserID($principaluri) {
-		list($prefix, $userid) = \Sabre\DAV\URLUtil::splitPath($principaluri);
-		return $userid;
 	}
 
 	/**

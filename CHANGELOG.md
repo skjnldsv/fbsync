@@ -1,3 +1,16 @@
+1.6.0:
+ - Added match from suggested friends
+ - Fixed match page loading (No more waiting for page to load all the images)
+ - Some design changes
+ - Match section rebuilt
+ - Fixed quotes in facebook names
+ - Improved match system
+ - Fixed tooltips on disabled buttons
+ - Optimized load on some scripts
+ - Vcard & Addressbook classes cleanup (removed unused functions)
+ - Improved page structure for low resolutions, mobiles and tablets
+ - Mobiles and tablets compatibility
+
 1.5.0:
  - Added "remove all pictures" button
  - Added "remove all birthdays" button

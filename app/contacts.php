@@ -171,7 +171,11 @@ class Contacts {
 	 * @NoAdminRequired
 	 */
 	public function getPhoto($id, $size) {
-		return $this->getContact($id)->getPhotoUrl($size);
+		$contact = $this->getContact($id);
+		if(!$contact) {
+			return false;
+		}
+		return $contact->getPhotoUrl($size);
 	}
 	
 	/**
@@ -184,11 +188,12 @@ class Contacts {
 		$edited=0;
 		// List contacts by Name
 		foreach ($contacts as $contact) {
-			$contactsName[$contact->getName()]=$contact;
+			$contactsName[strtolower($contact->getName())]=$contact;
 		}
 		$friends = $this->fbController->getfriends();
 		// Parse all friends
 		foreach($friends as $fbid => $friend) {
+			$friend = strtolower($friend);
 			// Match exact name
 			if(isset($contactsName[$friend])) {
 				if($contactsName[$friend]->getFBID() != $fbid) {
@@ -222,7 +227,7 @@ class Contacts {
 			// Only if no FBID set (We do not want to override previous macthes)
 			if(!in_array($contact->getFBID(), $FBIDs)) {
 				foreach($friends as $fbid => $friend) {
-					$jaro = $contact->Jaro($friend)*100;
+					$jaro = $contact->Jaro(strtolower($friend))*100;
 					// Only best matches
 					if($jaro > App::JAROWINKLERMAX && !in_array($fbid, $FBIDs)) {
 						// Store as integer and big enough so that no results will overwrite another
@@ -245,6 +250,34 @@ class Contacts {
 			}
 		}
 		
+		return $edited;
+	}
+	
+	/**
+	 * Match exacts name but use the "People You May Know" list
+	 * @NoAdminRequired
+	 */
+	public function suggestMatch() {
+		$contacts = $this->getList();
+		$contactsName = Array();
+		$edited=0;
+		// List contacts by Name
+		// Use strtolower to avoid errors based on typo
+		foreach ($contacts as $contact) {
+			$contactsName[strtolower($contact->getName())]=$contact;
+		}
+		$friends = $this->fbController->getsuggestedFriends();
+		// Parse all friends
+		foreach($friends as $fbid => $friend) {
+			$friend = strtolower($friend);
+			// Match exact name
+			if(isset($contactsName[$friend])) {
+				if($contactsName[$friend]->getFBID() != $fbid) {
+					$edited++;
+					$contactsName[$friend]->setFBID($fbid);
+				}
+			}
+		}
 		return $edited;
 	}
 }

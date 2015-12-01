@@ -53,7 +53,7 @@ class PageController extends Controller {
 	 */
 	private function error($error) {
 		$params = ['error' => $error];
-		return new TemplateResponse('fbsync', 'error', $params);  // templates/login.php
+		return new TemplateResponse('fbsync', 'error', $params);  // templates/error.php
 	}
 
 	/**

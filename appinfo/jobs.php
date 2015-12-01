@@ -82,7 +82,8 @@ class Jobs extends TimedJob {
      */
     public function run($arguments) {
 		if( (\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus') ) && \OCP\App::isEnabled('fbsync') ) {
-			$this->updatePhotos();
+			$cache = \OC::$server->getCache();
+			$cache->set("test", "test");
 		} else {
 			\OCP\Util::writeLog('fbsync', "App not enabled", \OCP\Util::INFO);
             return;

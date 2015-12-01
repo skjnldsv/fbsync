@@ -12,6 +12,7 @@
 
 script('fbsync', 'login');
 style('fbsync', 'fbsync');
+
 ?>
 
 <div id="app" class="fbsync">
@@ -21,36 +22,58 @@ style('fbsync', 'fbsync');
 	</div>
 
 	<div id="app-content" class="main-app-content">
-		<h1>WELCOME !</h1>
-		<br /><br />
-		<div class="main-app-intro">
-			Hi there! Welcome to the facebook sync application.<br />
-			This app works with the contacts AND the contacts+ app. If contacts+ enabled, it will be used as default. This app doesn't sync both of them simultaneously.
-			<br />
-			<br />
-			Warning! When using the "match similar names" function, <b>remember to check the matched contacts for errors.</b><br />
-			A lot of contacts can have an incorrect match. Especially if you got a lot of them!
-			<br />
-			<b>Please make sure to have backups of your contacts before running a sync.</b>
-			<br /><br /><br />
-			How this works:
-			<ul>
-				<li>In the settings section (bottom left) just login.</li>
-				<li>Go to the match section, and match your friends.</li>
-				<li>Finally, go to the sync section, click sync and wait!</li>
-			</ul>
-			<br />
-			ENJOY!
-		</div>
-		<br />
-		<h2>A little history:</h2>
-		<div class="main-app-intro">
-			Recently facebook decided to block many things of their API. The full friend list became inaccessible, and many profiles picture too. A lot of android app became worthless.
-			So because I love owncloud, I decided to work on a sync app.<br />
-			I figured out how to retrieve the facebook data by using the mobile website and a cookie auth.
+		<span id="high_res">
+			<div id="welcome" class="intro-info">
+				Welcome!!<br />This application sync profile pictures <u>and</u> birthdays from Facebook!
+			</div>
+			<div id="match" class="intro-info">
+				2nd, go here to match your contacts to your friends!
+			</div>
+			<div id="sync" class="intro-info">
+				Then you can sync right here! :)
+			</div>
+			<div id="warning" class="intro-info">
+				<b>Make backups!!</b><br />
+				This app has been verified, but you never can be too careful. ;)
+			</div>
+			<div id="warning2" class="intro-info">
+				If you want to sync your birthdays, <u>switch your facebook to English first</u>!<br />
+				It's a limitation I can't avoid because we don't use their API! :(
+			</div>
+			<div id="login" class="intro-info">
+				<b>First!</b> Login here!
+			</div>
+			<div id="github" class="intro-info">
+				A suggestion?<br />
+				A problem?<br />
+				Post it on github <a href="https://github.com/skjnldsv/Owncloud-FBSync/issues">HERE</a>!
+			</div>
+			<div id="copyright" class="intro-info">
+				<a href="http://www.flaticon.com/packs/hand-drawn-arrows">Arrows</a>
+			</div>
+		</span>
+		<span id="low_res">
+			<b>Welcome!!</b><br />This application sync profile pictures <u>and</u> birthdays from Facebook!
 			<br /><br />
-			Please HELP! Fill an issue for any bugs found. I will happilly work to improve this app on my free time!<br />
-			<a href="https://github.com/skjnldsv/Owncloud-FBSync"><h3>Github</h3></a>
-		</div>
+			<b>Make backups!!</b><br />
+			This app has been verified, but you never can be too careful. ;)
+			<br /><br /><br />
+			If you want to sync your birthdays, <u>switch your facebook to English first</u>!<br />
+			It's a limitation I can't avoid because we don't use their API! :(
+			<br /><br /><br />
+			<h2>How to use:</h2>
+			<ul>
+				<li>1. Connect to facebook (bottom left)</li>
+				<li>2. Enable at least one addressbook in your contact app</li>
+				<li>3. Match your contacts with your fiends (menu on the left)</li>
+				<li>4. Finally, sync the data you want in the sync page! :)</li>
+			</ul>
+			<br /><br />
+			
+			<div id="github" class="intro-info">
+				A suggestion?<br />
+				A problem?<br />
+				Post it on github <a href="https://github.com/skjnldsv/Owncloud-FBSync/issues">HERE</a>!
+		</span>
 	</div>
 </div>

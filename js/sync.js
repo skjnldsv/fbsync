@@ -18,7 +18,9 @@ function isDoneSyncing(synced, error, ignored, total, syncbutton) {
 		$('#loader').fadeOut();
 		$('#contacts-list').fadeIn();
 		$(".syncbutton").removeProp('disabled');
-		$(syncbutton).text($(syncbutton).data('text')).removeData('text');		
+		$(syncbutton).text($(syncbutton).data('text')).removeData('text');
+		// Fixes the padding in case of low width screen resolution
+		$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});	
 	}
 }
 
@@ -151,32 +153,6 @@ function syncBirthdays() {
 		$('.tooltipped-top').tipsy({gravity: 's'});
 		$('.tooltipped-bottom').tipsy({gravity: 'n'});
 		
-		// Hack to resize auto #controls (/core/js/js.js:1435)
-		if($('#controls').length) {
-			var controlsWidth;
-			// if there is a scrollbar …
-			if($('#app-content').get(0).scrollHeight > $('#app-content').height()) {
-				if($(window).width() > 768) {
-					controlsWidth = $('#content').width() - $('#app-navigation').width() - getScrollBarWidth();
-					if (!$('#app-sidebar').hasClass('hidden') && !$('#app-sidebar').hasClass('disappear')) {
-						controlsWidth -= $('#app-sidebar').width();
-					}
-				} else {
-					controlsWidth = $('#content').width() - getScrollBarWidth();
-				}
-			} else { // if there is none
-				if($(window).width() > 768) {
-					controlsWidth = $('#content').width() - $('#app-navigation').width();
-					if (!$('#app-sidebar').hasClass('hidden') && !$('#app-sidebar').hasClass('disappear')) {
-						controlsWidth -= $('#app-sidebar').width();
-					}
-				} else {
-					controlsWidth = $('#content').width();
-				}
-			}
-			$('#controls').css('width', controlsWidth);
-			$('#controls').css('min-width', controlsWidth);
-		}
 		
 //----------  LOCAL CONTACTS ----------
         var url = OC.generateUrl('apps/fbsync/FBcontacts')
@@ -192,6 +168,8 @@ function syncBirthdays() {
 //----------  BUTTONS ----------	
 		// Toggle matched button
 		$("#syncpic").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
 			// Save and set new text
 			$("#syncpic").data('text', $("#syncpic").text()).text('Loading...').addClass('loading');
 			$(".syncbutton").prop('disabled',true);
@@ -200,6 +178,8 @@ function syncBirthdays() {
 			syncPictures();
 		})
 		$("#syncbday").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
 			// Save and set new text
 			$("#syncbday").data('text', $("#syncbday").text()).text('Loading...').addClass('loading');
 			$(".syncbutton").prop('disabled',true);
@@ -209,6 +189,8 @@ function syncBirthdays() {
 		})
 		$("#delpictures").click(function() {
 			if (confirm("Are you sure ?!")) {
+				// Fix for tooltip on disabled buttons
+				$('.tooltip').fadeOut();
 				// Save and set new text
 				$("#delpictures").data('text', $("#delpictures").text()).text('Loading...').addClass('loading');
 				$(".syncbutton").prop('disabled',true);
@@ -219,6 +201,8 @@ function syncBirthdays() {
 		})
 		$("#delbdays").click(function() {
 			if (confirm("Are you sure ?!")) {
+				// Fix for tooltip on disabled buttons
+				$('.tooltip').fadeOut();
 				// Save and set new text
 				$("#delbdays").data('text', $("#delbdays").text()).text('Loading...').addClass('loading');
 				$(".syncbutton").prop('disabled',true);
@@ -227,6 +211,14 @@ function syncBirthdays() {
 				delBdays();
 			}
 		})
+		
+//----------  RESIZE & SCREEN ADAPTATION ----------	
+		// Fixes the padding in case of low width screen resolution
+		$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+		$(window).resize(function() {
+			$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+			
+		});
 		
 	});
 

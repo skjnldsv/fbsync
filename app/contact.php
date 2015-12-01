@@ -252,6 +252,16 @@ class Contact {
 	}
 	
 	/**
+	 * Get photo URL
+	 */
+	public function getPhoto($size=40) {
+		$image = new Image($this->vcard->PHOTO);
+		$image->resize($size);
+//		return base64_encode($this->vcard->PHOTO);
+		return 'data:'.$image->mimeType().';base64,'.$image->__toString();
+	}
+	
+	/**
 	 * Set FBID
 	 */
 	private function save() {
@@ -301,7 +311,7 @@ class Contact {
 	 * @NoCSRFRequired
 	 */
 	public function Jaro($string) {
-		return JaroWinkler::Jaro($this->getName(), $string);
+		return JaroWinkler::Jaro(strtolower($this->getName()), $string);
 	}
 		
 }

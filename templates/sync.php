@@ -15,13 +15,14 @@ style('fbsync', 'fbsync');
 ?>
 
 <div id="app" class="fbsync">
+	
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>
 		<?php print_unescaped($this->inc('part.settings')); ?>
 	</div>
-
+	
 	<div id="app-content">
-		<div id="controls" class="clear">
+		<div id="controls">
 			<div class="controls-left">
 <!--				<div class="controls_item button last crumb"><h2>Sync profile pictures</h2></div>-->
 				<button id="syncpic" class="tooltipped-bottom syncbutton"
@@ -56,10 +57,16 @@ style('fbsync', 'fbsync');
 			</div>
 			<div id="loading-status">Syncing...</div>
 		</div>
+		
+		<!-- Fake contact div to load the contact svg before the contacts pictures -->
+		<div class="sync-contact" style="display:none"></div>
+		
 		<div id="contacts-list" class="hidden">
 			<div id="sync-success" class="clear sync-results-container"><h2>Success</h2><div class="sync-results"></div></div>
 			<div id="sync-errors" class="clear sync-results-container"><h2>Errors</h2><div class="sync-results"></div></div>
 			<div id="sync-ignored" class="clear sync-results-container"><h2>Ignored</h2><div class="sync-results"></div></div>
 		</div>
+		
 	</div>
+	
 </div>

@@ -20,6 +20,7 @@ return [
 	   ['name' => 'facebook#islogged', 'url' => '/facebook/islogged', 'verb' => 'GET'],
 	   ['name' => 'contacts#perfectMatch', 'url' => '/perfectmatch', 'verb' => 'GET'],
 	   ['name' => 'contacts#approxMatch', 'url' => '/approxmatch', 'verb' => 'GET'],
+	   ['name' => 'contacts#suggestMatch', 'url' => '/suggestmatch', 'verb' => 'GET'],
 	   ['name' => 'contacts#updateFBID', 'url' => '/contact/fbid/{id}', 'verb' => 'POST'],
 	   ['name' => 'contacts#setPhoto', 'url' => '/setphoto/{id}', 'verb' => 'GET'],
 	   ['name' => 'contacts#setBirthday', 'url' => '/setbday/{id}', 'verb' => 'GET'],

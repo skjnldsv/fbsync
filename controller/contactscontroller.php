@@ -57,6 +57,24 @@ class ContactsController extends Controller {
 	 * @NoCSRFRequired
 	 * @return JSONResponse
 	 */
+	public function approxMatch(){
+		return new JSONResponse($this->app->approxMatch());
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return JSONResponse
+	 */
+	public function suggestMatch(){
+		return new JSONResponse($this->app->suggestMatch());
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return JSONResponse
+	 */
 	public function setPhoto($id){
 		return new JSONResponse($this->app->setPhoto($id));
 	}
@@ -77,15 +95,6 @@ class ContactsController extends Controller {
 	 */
 	public function getPhoto($id, $size){
 		return new JSONResponse($this->app->getPhoto($id, $size));
-	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * @return JSONResponse
-	 */
-	public function approxMatch(){
-		return new JSONResponse($this->app->approxMatch());
 	}
 
 	/**

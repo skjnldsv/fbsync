@@ -64,6 +64,23 @@ function approxMatch() {
 	});
 }
 
+// Match all contacts with exact Name
+function suggestMatch() {
+	$("#suggestmatch").text('Matching...').prop('disabled',true).addClass('loading');
+	$.ajax({ 
+		url: OC.generateUrl('apps/fbsync/suggestmatch'),
+		type: 'GET'
+	}).done(function(response) {
+		$("#suggestmatch").text(response+' contacts updated [refresh in 3s]');
+		// Reload
+		setTimeout(function() {document.location.reload()},3000);
+		return true;
+	}).fail(function(response) {
+		console.log(response);
+		return false;
+	});
+}
+
 function reloadCache() {
 	$("#fbstatus").text('Loading...').prop('disabled',true).addClass('loading');
 	$.ajax({ 
@@ -117,35 +134,6 @@ function sortT(a,b){
 		$('.tooltipped-bottom').tipsy({gravity: 'n'});
 		$('#contacts-list').fadeOut();
 		
-//----------  RESIZE ----------				
-		// Hack to resize auto #controls (/core/js/js.js:1435)
-		if($('#controls').length) {
-			var controlsWidth;
-			// if there is a scrollbar …
-			if($('#app-content').get(0).scrollHeight > $('#app-content').height()) {
-				if($(window).width() > 768) {
-					controlsWidth = $('#content').width() - $('#app-navigation').width() - getScrollBarWidth();
-					if (!$('#app-sidebar').hasClass('hidden') && !$('#app-sidebar').hasClass('disappear')) {
-						controlsWidth -= $('#app-sidebar').width();
-					}
-				} else {
-					controlsWidth = $('#content').width() - getScrollBarWidth();
-				}
-			} else { // if there is none
-				if($(window).width() > 768) {
-					controlsWidth = $('#content').width() - $('#app-navigation').width();
-					if (!$('#app-sidebar').hasClass('hidden') && !$('#app-sidebar').hasClass('disappear')) {
-						controlsWidth -= $('#app-sidebar').width();
-					}
-				} else {
-					controlsWidth = $('#content').width();
-				}
-			}
-			$('#controls').css('width', controlsWidth);
-			$('#controls').css('min-width', controlsWidth);
-
-		}
-	
 //----------  BUTTONS ----------	
 		// Toggle matched button
 		$("#togglematch").click(function() {
@@ -155,16 +143,29 @@ function sortT(a,b){
 
 		// PerfectMatch button
 		$("#perfectmatch").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
 			perfectMatch();
 		})
 		
-		// PerfectMatch button
+		// ApproxMatch button
 		$("#approxmatch").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
 			approxMatch();
 		})
 		
-		// reloadCache button
+		// SuggestMatch button
+		$("#suggestmatch").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
+			suggestMatch();
+		})
+		
+		// ReloadCache button
 		$("#fbstatus").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
 			reloadCache();
 		})
 		
@@ -177,16 +178,17 @@ function sortT(a,b){
 		$("#sortT").click(function() {
 			$(".localcontact").sort(sortT).appendTo($("#contacts-list"));
 		})
-	
+		
+		// Select changes
 		$(".fbselect").change(function() {
 			// Update classes
-			var id=$(this).parent().data('id');
+			var id=$(this).parent().parent().data('id');
 			var name=$(this).parent().find('.name').text();
 			
 			$(this).prop('disabled', true);
 			
 			if($(this).val()!="false") {
-				$(this).parent().removeClass('nofbid');
+				$(this).parent().parent().removeClass('nofbid');
 				updateFBID(id, $(this).val(), function() {
 					// $this won't work here
 					$('[data-id="'+id+'"] select').removeProp('disabled');
@@ -195,7 +197,7 @@ function sortT(a,b){
 					alert("Error saving "+name+" data !");
 				});
 			} else {
-				$(this).parent().addClass('nofbid');
+				$(this).parent().parent().addClass('nofbid');
 				updateFBID(id, null, function() {
 					$('[data-id="'+id+'"] select').removeProp('disabled');
 					reloadMatched();
@@ -205,11 +207,17 @@ function sortT(a,b){
 			}
 		});
 		
-//----------  INIT STATS ----------	
+//----------  INIT STATS & VARIOUS PAGE LOADING ----------	
 		reloadMatched();
-		$(window).on("load", function() {
-			$('#loader').remove();
-			$('#contacts-list').fadeIn();
+		$('#loader').remove();
+		$('#contacts-list').fadeIn();
+		
+//----------  RESIZE & SCREEN ADAPTATION ----------	
+		// Fixes the padding in case of low width screen resolution
+		$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+		$(window).resize(function() {
+			$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+			
 		});
 		
 	});

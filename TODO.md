@@ -2,8 +2,8 @@
  - 
  
 ## Secondary
-- Auto sync (cron)
-- Fix user home
+ - Auto sync (cron)
+ - Add custom fbid
 
 ## Ideas
- - Search match among suggested friends and try to get profile picture anyway
+ - 
