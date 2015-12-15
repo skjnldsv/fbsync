@@ -276,6 +276,9 @@
 	border-radius: 0;
 	display: block;
 }
+#contacts-list-results {
+	padding: 20px;
+}
 .sync-contact {
 	display: inline-block;
 	margin: 10px;

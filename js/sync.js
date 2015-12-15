@@ -16,11 +16,11 @@ function isDoneSyncing(synced, error, ignored, total, syncbutton) {
 	if(synced+error+ignored >= total) {
 		$(syncbutton).text('Done !').removeClass('loading');
 		$('#loader').fadeOut();
-		$('#contacts-list').fadeIn();
+		$('#contacts-list-results').fadeIn();
 		$(".syncbutton").removeProp('disabled');
 		$(syncbutton).text($(syncbutton).data('text')).removeData('text');
 		// Fixes the padding in case of low width screen resolution
-		$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});	
+		$('#contacts-list-results').css({'padding-top':$('#controls').height()+'px'});	
 	}
 }
 
@@ -149,7 +149,7 @@ function syncBirthdays() {
 	$(document).ready(function () {
 		
 		// Better visual
-		$('#contacts-list').fadeOut();
+		$('#contacts-list-results').fadeOut();
 		$('.tooltipped-top').tipsy({gravity: 's'});
 		$('.tooltipped-bottom').tipsy({gravity: 'n'});
 		
@@ -214,9 +214,9 @@ function syncBirthdays() {
 		
 //----------  RESIZE & SCREEN ADAPTATION ----------	
 		// Fixes the padding in case of low width screen resolution
-		$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+		$('#contacts-list-results').css({'padding-top':$('#controls').height()+'px'});
 		$(window).resize(function() {
-			$('#contacts-list').css({'padding-top':$('#controls').height()+'px'});
+			$('#contacts-list-results').css({'padding-top':$('#controls').height()+'px'});
 			
 		});
 		

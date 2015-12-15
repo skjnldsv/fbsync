@@ -49,8 +49,6 @@ class Contacts {
 		foreach($activeAddressbooks as $activeAddressbook) {
 			foreach(VCard::all($activeAddressbook) as $contact) {
 				$contacts[$contact['id']] = new Contact(
-					$this->contactsManager,
-					$this->cache,
 					$this->fbController,
 					$contact['id'],
 					$contact['addressbookid'],
@@ -74,8 +72,6 @@ class Contacts {
 		// Do you have the right to get this contact?
 		if(in_array($contact['addressbookid'], $activeAddressbooks)) {
 			return new Contact(
-				$this->contactsManager,
-				$this->cache,
 				$this->fbController,
 				$contact['id'],
 				$contact['addressbookid'],
@@ -170,7 +166,7 @@ class Contacts {
 	 * Get profile picture url
 	 * @NoAdminRequired
 	 */
-	public function getPhoto($id, $size) {
+	public function getPhoto($id, $size=60) {
 		$contact = $this->getContact($id);
 		if(!$contact) {
 			return false;

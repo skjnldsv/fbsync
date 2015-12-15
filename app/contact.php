@@ -11,8 +11,6 @@
 
 namespace OCA\FbSync\App;
 
-use OCA\FbSync\Controller\ContactsController;
-use OCP\ICache;
 use OCP\Image;
 use OCA\FbSync\Controller\FacebookController;
 use Sabre\VObject;
@@ -25,14 +23,6 @@ use OCA\FbSync\JaroWinkler;
  * @package OCA\FbSync\App
  */
 class Contact {
-	/**
-	 * @var ICache
-	 */
-	private $cache;
-	/**
-	 * @var IManager
-	 */
-	private $contactsManager;
 	/**
 	 * @var FacebookController
 	 */
@@ -56,24 +46,19 @@ class Contact {
     
 	/**
 	* Construct
-	* @var ICache 
+	* @var FacebookController The facebook controller instance
 	* @var integer The contact local id 
-	* @var integer|false The contact facebook id
 	* @var string The adressbook backend (usually "local")
-	* @var integer The adressbook id
-	* @var string The photo url
+	* @var intstringeger The last edit time
+	* @var VObject The vcard data
 	*/
 	public function __construct(
-		IManager $contactsManager,
-		ICache $cache,
 		FacebookController $fbController,
-		integer $id,
-		string $addressbook,
-		string $lastmodified,
+		$id,
+		$addressbook,
+		$lastmodified,
 		VObject $vcard
 	) {
-		$this->contactsManager = $contactsManager;
-		$this->cache = $cache;
 		$this->fbController = $fbController;
 		$this->id = $id;
 		$this->addressbook = $addressbook;
@@ -234,10 +219,10 @@ class Contact {
 	 */
 	public function getPhotoUrl($size=false) {
 		if(App::$contactPlus) {
-			$photo = "index.php/apps/contactsplus/getcontactphoto/".$this->id;						 	
+			$photo = "/index.php/apps/contactsplus/getcontactphoto/".$this->id;						 	
 		} else {
 
-			$photo = "index.php/apps/contacts/addressbook/".
+			$photo = "/index.php/apps/contacts/addressbook/".
 				$this->backend."/".
 				$this->addressbook."/contact/".
 				$this->id."/photo";

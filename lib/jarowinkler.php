@@ -40,7 +40,7 @@ namespace OCA\FbSync;
 
 class JaroWinkler {
 
-	private function getCommonCharacters( $string1, $string2, $allowedDistance ){
+	private static function getCommonCharacters( $string1, $string2, $allowedDistance ){
 
 	  $str1_len = strlen($string1);
 	  $str2_len = strlen($string2);

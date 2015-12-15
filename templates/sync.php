@@ -61,7 +61,7 @@ style('fbsync', 'fbsync');
 		<!-- Fake contact div to load the contact svg before the contacts pictures -->
 		<div class="sync-contact" style="display:none"></div>
 		
-		<div id="contacts-list" class="hidden">
+		<div id="contacts-list-results" style="display:none">
 			<div id="sync-success" class="clear sync-results-container"><h2>Success</h2><div class="sync-results"></div></div>
 			<div id="sync-errors" class="clear sync-results-container"><h2>Errors</h2><div class="sync-results"></div></div>
 			<div id="sync-ignored" class="clear sync-results-container"><h2>Ignored</h2><div class="sync-results"></div></div>

@@ -103,15 +103,24 @@ class VCard {
 		if(!is_null($result)) {
 			while( $row = $result->fetchRow()) {
 				
-				if($row['bcompany']){
-					$row['sortFullname'] = mb_substr($row['fullname'],0,3,"UTF-8");
-				}else{
-				  	if($row['lastname'] !== ''){	
-				  		$row['sortFullname'] = mb_substr($row['lastname'],0,3,"UTF-8");
-					}else{
-						$row['sortFullname'] = mb_substr($row['surename'],0,3,"UTF-8");
+				// Prevent undefined indexes if using the default contacts app
+				if(isset($row['bcompany']) && isset($row['lastname'])) {
+					
+					if($row['bcompany']){
+						$row['sortFullname'] = mb_substr($row['fullname'],0,3,"UTF-8");
+					} else {
+						if($row['lastname'] !== ''){	
+							$row['sortFullname'] = mb_substr($row['lastname'],0,3,"UTF-8");
+						} else {
+							$row['sortFullname'] = mb_substr($row['surename'],0,3,"UTF-8");
+						}
 					}
+					
+				} else {
+					$row['lastname'] == '';
+					$row['bcompany'] == false;
 				}
+				
 				if($row['fullname'] == '' && $row['lastname'] == ''){
 					$row['fullname'] = 'unknown';
 					$row['sortFullname'] = mb_substr($row['fullname'],0,3,"UTF-8");
@@ -286,7 +295,7 @@ class VCard {
 		if($bCompany && $organization !== ''){
 			$card->FN = $organization;
 			$fn = $organization;
-		}else{
+		} else {
 			if($lastname !== '' || $surename !== ''){	
 				$fn = $surename.$lastname;
 				$card->FN = $fn;

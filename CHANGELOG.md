@@ -1,3 +1,8 @@
+1.6.1:
+ - Big cleanup
+ - Unused vars removed (bug #8)
+ - Contact picture url rewriting fix (bug #8)
+ 
 1.6.0:
  - Added match from suggested friends
  - Fixed match page loading (No more waiting for page to load all the images)
