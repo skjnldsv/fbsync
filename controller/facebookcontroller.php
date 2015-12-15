@@ -263,6 +263,9 @@ class FacebookController extends Controller {
 		}
 		
 		$getdata = $this->dorequest("https://m.facebook.com/$fbid", false, true);
+		if (preg_match("/not found/mi", $getdata[1])) {
+			return "notfound";
+		}
 		if (empty($getdata[1])) {
 			return false;
 		}
@@ -341,6 +344,14 @@ class FacebookController extends Controller {
 	 */
 	public function login($email, $pass) {
         return $this->fblogin(base64_decode($email), base64_decode($pass));
+	}
+
+	/**
+	 * Login to facebook
+	 * @NoAdminRequired
+	 */
+	public function delCookie() {
+        return unlink($this->userHome.$this->cookieName);
 	}
 	
 	/**

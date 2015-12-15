@@ -20,6 +20,9 @@
 	<div id="app-settings-content">
 		<i>Credentials</i><br>
 		<input type="text" id="fbemail" placeholder="User" /><br>
-		<input type="password" id="fbpass" placeholder="Password" /><input type="button" value="Login" id="fblogin" />
+		<input type="password" id="fbpass" placeholder="Password" />
+		<input type="button" value="Login"
+			   title="Login will override previously stored credentials" class="tooltipped" id="fblogin" />
+		<button id="delcookie" class="fa-trash tooltipped" title="Remove stored credentials"></button>
 	</div>
 </div>

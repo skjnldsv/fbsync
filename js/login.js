@@ -44,6 +44,23 @@ function logcheck() {
 			});
 
 		});
+
+
+//----------  DELETE COOKIE  ----------
+		$('#delcookie').click(function () {
+			var url = OC.generateUrl('apps/fbsync/facebook/delcookie');
+			$.get(url).success(function (response) {
+				if(response) {
+					jQuery('#app-settings-content #delcookie').css({'background-color':'#A1B56C','color':'white'});
+                    alert("Cookie removed.")
+                } else {
+					jQuery('#app-settings-content #delcookie').css({'background-color':'#AB4642','color':'white'});
+                    alert("Error while removing the cookie. Do you have the right permissions?")
+                }
+			});
+
+		});
+		
 		
 //----------  LOGIN STATUS ----------
 		$.ajax({ 

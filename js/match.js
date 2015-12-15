@@ -169,6 +169,36 @@ function sortT(a,b){
 			reloadCache();
 		})
 		
+		// Custom FBID button
+		$(".custom_fbid").click(function() {
+			// Fix for tooltip on disabled buttons
+			$('.tooltip').fadeOut();
+			// Update classes
+			var id=$(this).parent().parent().data('id');
+			var name=$(this).parent().find('.name').text();
+			
+			var fbid = prompt("Enter fbid");
+			if (fbid != null && fbid == parseInt(fbid, 10) && !isNaN(fbid)) {
+				$(this).parent().parent().removeClass('nofbid');
+				updateFBID(id, fbid, function() {
+					var select = $('[data-id="'+id+'"] select');
+					var option = select.find('option[value='+fbid+']');
+					if(option.length>0) {
+						option.prop('selected',true);
+					} else {
+						select.find('.new_fbid').remove();
+						select.find('option:eq(0)').after('<option selected class="new_fbid" value="'+fbid+'">FBID not in your friends list</option>')
+					}
+					$('[data-id="'+id+'"] select').removeProp('disabled');
+					reloadMatched();
+				}, function() {
+					alert("Error saving "+name+" data !");
+				});
+			} else {
+				alert('Wrong input. FBIDs are supposed to be a number.')
+			}
+		})
+		
 		// sort Alpha
 		$("#sortA").click(function() {
 			$(".localcontact").sort(sortA).appendTo($("#contacts-list"));

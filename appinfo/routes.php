@@ -16,6 +16,7 @@ return [
 	   ['name' => 'page#match', 'url' => '/match', 'verb' => 'GET'],
 	   ['name' => 'page#sync', 'url' => '/sync', 'verb' => 'GET'],
 	   ['name' => 'facebook#login', 'url' => '/facebook/login', 'verb' => 'POST'],
+	   ['name' => 'facebook#delCookie', 'url' => '/facebook/delcookie', 'verb' => 'GET'],
 	   ['name' => 'facebook#reload', 'url' => '/facebook/reloadfriends', 'verb' => 'GET'],
 	   ['name' => 'facebook#islogged', 'url' => '/facebook/islogged', 'verb' => 'GET'],
 	   ['name' => 'contacts#perfectMatch', 'url' => '/perfectmatch', 'verb' => 'GET'],

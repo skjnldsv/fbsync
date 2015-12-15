@@ -93,6 +93,16 @@ class Contact {
 						"img" => $imgAltUrl,
 						"photo" => isset($this->vcard->PHOTO)
 					);
+				} else if($imgAltUrl == "notfound") {
+					return Array(
+						"error" => "Wrong FBID, User not found",
+						"id" => $this->id,
+						"name" => $this->getName(),
+						"backend" => $this->backend,
+						"addressbook" => $this->addressbook,
+						"img" => $imgAltUrl,
+						"photo" => isset($this->vcard->PHOTO)
+					);
 				} else {
 					$imgAlt = file_get_contents($imgAltUrl);
 					$image = new Image(base64_encode($imgAlt));
@@ -129,7 +139,8 @@ class Contact {
 				"name" => $this->getName(),
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
-				"photo" => isset($this->vcard->PHOTO)
+				"photo" => isset($this->vcard->PHOTO),
+				"alt_method" => isset($imgAltUrl)?$imgAltUrl:false
 			);
 		}
 	}

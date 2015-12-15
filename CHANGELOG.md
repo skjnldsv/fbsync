@@ -1,3 +1,8 @@
+1.7.0:
+ - Added button to remove the cookie
+ - Added custom fbid option
+ - Profile picture with invalid fbid fixed
+
 1.6.1:
  - Big cleanup
  - Unused vars removed (bug #8)
@@ -47,13 +52,13 @@
  - Facebook connection status
  - Status messages
  - Prevent app access if not logged
- 
+
 1.1.0:
  - Workaround for friends who have disabled the graph API
  - Second auto match system using the Jaro-Winkler algorithm
  - Various bug fixes
- 
- 1.0.0:
+
+1.0.0:
  - More secure location for cookie (fixed #2)
  - Massive Cleanup
  - Fixed and improved login system
@@ -61,8 +66,8 @@
  - Reorganized classes
  - No more javascript data loading for the match section
  - Sort contacts
- 
- 0.1.8-alpha:
+
+0.1.8-alpha:
  - Fixed some css
  - Cleanup
 

@@ -111,6 +111,7 @@ $friends = $_['facebook']->getfriends();
 					echo '<div class="content"><span class="name">';
 					echo $contact->getName();
 					echo '</span>';
+					echo '<div class="custom_fbid fa-pencil-square-o tooltipped" title="Custom FBID"></div>';
 					echo '<select class="fbselect">';
 					echo '<option value="false">Choose friend</option>';
 					// Building friends options
@@ -127,7 +128,7 @@ $friends = $_['facebook']->getfriends();
 					}
 					// If FBID not in friends list
 					if(isset($contact->vcard->FBID) && !$selected) {
-						$options = '<option selected value="'.$contact->getFBID().'">FBID not in your friends list</option>'.$options;
+						$options = '<option selected value="'.$contact->getFBID().'" class="new_fbid">FBID not in your friends list</option>'.$options;
 					}
 					echo $options;
 					echo '</select>';

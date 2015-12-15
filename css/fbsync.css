@@ -207,6 +207,7 @@
 	padding-left: 10px;
 	margin-bottom: 10px;
 }
+
 /* ---- CONTACTS LIST ---- */
 #contacts-list {
 	padding-top: 40px;
@@ -217,7 +218,6 @@
 .localcontact {
     margin: 10px;
 	transition: 300ms ease-in-out;
-	overflow: hidden;
 	display: inline-flex;
 	flex-grow: 0;
     flex-shrink: 0;
@@ -252,10 +252,12 @@
     border-left: none;
 	border-radius: 0 2px 2px 0;
 	width: 100%;
+	position: relative;
 }
 .localcontact .name {
-	width: 170px;
+	width: 155px;
     overflow: hidden;
+	text-overflow: ellipsis;
     white-space: nowrap;
     display: block;
 	margin-bottom: 5px;
@@ -263,6 +265,12 @@
 .localcontact:not(.nofbid) .content {
 	background-color: #3b5998;
 	color: #FFF;
+}
+.localcontact .custom_fbid {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+	cursor: pointer;
 }
 .localcontact .selectspan {
 	display: inline-block;
