@@ -57,7 +57,7 @@ class Contact {
 		$id,
 		$addressbook,
 		$lastmodified,
-		VObject $vcard
+		$vcard
 	) {
 		$this->fbController = $fbController;
 		$this->id = $id;
