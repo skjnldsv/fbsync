@@ -117,8 +117,8 @@ class VCard {
 					}
 					
 				} else {
-					$row['lastname'] == '';
-					$row['bcompany'] == false;
+					$row['lastname'] = '';
+					$row['bcompany'] = false;
 				}
 				
 				if($row['fullname'] == '' && $row['lastname'] == ''){
