@@ -1,6 +1,3 @@
-1.7.1:
- - Small fixes (bug #8)
-
 1.7.0:
  - Added button to remove the cookie (#9)
  - Added custom fbid option
