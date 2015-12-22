@@ -1,3 +1,6 @@
+1.7.2:
+ - Minor compatiblity fix
+
 1.7.1:
  - Small fixes (bug #8)
 

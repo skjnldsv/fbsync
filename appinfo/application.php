@@ -40,8 +40,8 @@ class Application extends App {
 	static $ShareAddressBook;
 	static $ShareAddressBookPREFIX;
 	static $contactPlus=false;
-	const MAXPICTURESIZE = 800;
-	const JAROWINKLERMAX = 85; // Percent for Jaro-Winkler match tolerance
+	const MAXPICTURESIZE = 720; // Fix for too big vcards not getting properly synced
+	const JAROWINKLERMAX = 85;  // Percent for Jaro-Winkler match tolerance
 	
 	public function __construct ($user=false, array $urlParams=array()) {
 		
