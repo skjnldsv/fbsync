@@ -1,4 +1,4 @@
-1.7.2:
+1.7.3:
  - Bug with last oc update fix
  - Bug with profile pictures (fix #12)
 
