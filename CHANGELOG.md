@@ -1,4 +1,8 @@
 1.7.2:
+ - Bug with last oc update fix
+ - Bug with profile pictures (fix #12)
+
+1.7.2:
  - Minor compatiblity fix
 
 1.7.1:
