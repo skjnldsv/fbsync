@@ -91,7 +91,8 @@ class Contact {
 						"backend" => $this->backend,
 						"addressbook" => $this->addressbook,
 						"img" => $imgAltUrl,
-						"photo" => isset($this->vcard->PHOTO)
+						"photo" => isset($this->vcard->PHOTO),
+						"photourl" => $this->getPhotoUrl()
 					);
 				} else if($imgAltUrl == "notfound") {
 					return Array(
@@ -101,7 +102,8 @@ class Contact {
 						"backend" => $this->backend,
 						"addressbook" => $this->addressbook,
 						"img" => $imgAltUrl,
-						"photo" => isset($this->vcard->PHOTO)
+						"photo" => isset($this->vcard->PHOTO),
+						"photourl" => $this->getPhotoUrl()
 					);
 				} else {
 					$imgAlt = file_get_contents($imgAltUrl);
@@ -116,7 +118,8 @@ class Contact {
 							"backend" => $this->backend,
 							"addressbook" => $this->addressbook,
 							"img" => $imgAltUrl,
-							"photo" => isset($this->vcard->PHOTO)
+							"photo" => isset($this->vcard->PHOTO),
+							"photourl" => $this->getPhotoUrl()
 						);
 					}
 				}
@@ -140,6 +143,7 @@ class Contact {
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
+				"photourl" => $this->getPhotoUrl(),
 				"alt_method" => isset($imgAltUrl)?$imgAltUrl:false
 			);
 		}
@@ -159,7 +163,8 @@ class Contact {
 				"name" => $this->getName(),
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
-				"photo" => isset($this->vcard->PHOTO)
+				"photo" => isset($this->vcard->PHOTO),
+				"photourl" => $this->getPhotoUrl()
 			);
 		} else if(isset($this->vcard->BDAY)) {
 			return Array(
@@ -170,6 +175,7 @@ class Contact {
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
+				"photourl" => $this->getPhotoUrl(),
 				"birthday" => true
 			);
 		}
@@ -183,7 +189,8 @@ class Contact {
 				"name" => $this->getName(),
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
-				"photo" => isset($this->vcard->PHOTO)
+				"photo" => isset($this->vcard->PHOTO),
+				"photourl" => $this->getPhotoUrl()
 			);
 		} else {
 			$birthday = date('Y-m-d', strtotime($birthday));
@@ -197,6 +204,7 @@ class Contact {
 				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
+				"photourl" => $this->getPhotoUrl(),
 				"birthday" => $birthday
 			);
 		}
@@ -237,12 +245,6 @@ class Contact {
 				$this->backend."/".
 				$this->addressbook."/contact/".
 				$this->id."/photo";
-		}
-		
-		if(!$size) {
-			header('Location: '.$photo);
-		} else {
-			header('Location: '.$photo.'?maxSize='.$size);
 		}
 		return $photo;
 	}

@@ -61,14 +61,10 @@ function syncPictures() {
 		$.get(OC.generateUrl('apps/fbsync/setphoto/'+id))
 			.done(function(response) {
 
-			var url = OC.generateUrl(
-				'apps/fbsync/getphoto/{id}/100',
-				{id: response['id']}
-			);
 			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name'];
 			var contactdivError = ': '+response['error'];
 			if(response['photo'] == true) {
-				var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+				var contactdivEnd = '"><img src="'+response['photourl']+'" height="100" width="100" /></div>';
 			} else {
 				var contactdivEnd = '"></div>';
 			}
@@ -106,14 +102,10 @@ function syncBirthdays() {
 		$.get(OC.generateUrl('apps/fbsync/setbday/'+id))
 			.done(function(response) {
 
-			var url = OC.generateUrl(
-				'apps/fbsync/getphoto/{id}/100',
-				{id: response['id']}
-			);
 			var contactdivStart = '<div class="sync-contact tooltipped" title="'+response['name'];
 			var contactdivError = ': '+response['error'];
 			if(response['photo'] == true) {
-				var contactdivEnd = '"><img src="'+url+'" height="100" width="100" /></div>'
+				var contactdivEnd = '"><img src="'+response['photourl']+'" height="100" width="100" /></div>';
 			} else {
 				var contactdivEnd = '"></div>';
 			}

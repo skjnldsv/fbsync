@@ -85,6 +85,7 @@ class Application extends App {
 		$container->registerService('FacebookController', function(IContainer $c) {
 			return new FacebookController(
 				$c->query('AppName'),
+				$c->query('Request'),
 				$c->query('OCP\ICache'),
 				$c->query('userHome')
 			);

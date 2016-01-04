@@ -39,8 +39,8 @@ class FacebookController extends Controller {
 	 */
 	private $cacheKey;
 
-	public function __construct($AppName, ICache $cache=null, $userHome){
-		parent::__construct($AppName);
+	public function __construct($AppName, IRequest $request, ICache $cache=null, $userHome){
+		parent::__construct($AppName, $request);
 		$this->cache = $cache;
 		$this->userHome = $userHome;
 		$this->cacheKey = "FBfriends-".substr(md5($this->userHome), 0, 8);

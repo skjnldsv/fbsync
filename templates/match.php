@@ -103,7 +103,7 @@ $friends = $_['facebook']->getfriends();
 					echo '<div class="photo';
 					if(isset($contact->vcard->PHOTO)) {
 //						echo '"><img src="'.$contact->getPhoto().'" height="40" width="40" />';
-						echo '"><img src="index.php/apps/fbsync/getphoto/'.$contact->id.'/60" height="60" width="60" />';
+						echo '"><img src="'.$contact->getPhotoUrl(60).'" height="60" width="60" />';
 					} else {
 						echo ' nophoto">';
 					}
