@@ -1,5 +1,5 @@
 1.8:
- - OC9 compatibility
+ - OC9 compatibility & OC8 depreciation
  - Fix unwanted error in log (fix #21)
  - Changed the way fbsync retrieve the pictures (oc9)
  - NO COMPATIBLE with contact+ in oc9 (not updated)
