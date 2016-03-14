@@ -13,7 +13,7 @@ namespace OCA\FbSync\AppInfo;
 
 use OCA\FbSync\AppInfo\Application as FbSyncApp;	
 
-if(\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus')) {
+if(\OCP\App::isEnabled('contacts')) {
 	$app = new FbSyncApp();
 	$c = $app->getContainer();
 	
@@ -29,7 +29,7 @@ if(\OCP\App::isEnabled('contacts') || \OCP\App::isEnabled('contactsplus')) {
 	};
 	$c->getServer()->getNavigationManager()->add($navigationEntry);
 } else {
-	$msg = 'Can not enable the FBSync app because the Contacts App is disabled.';
+	$msg = 'Can not enable the FBSync app because the Contact app is disabled.';
 	\OCP\Util::writeLog('fbsync', $msg, \OCP\Util::ERROR);
 }
 

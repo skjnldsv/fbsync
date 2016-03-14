@@ -3,7 +3,7 @@
  
 ## Secondary
  - Auto sync (cron)
- - Add custom fbid
-
+ - Modify birthdays sync by using the ical format from fb
+ 
 ## Ideas
  - 

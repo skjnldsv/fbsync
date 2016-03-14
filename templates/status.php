@@ -12,7 +12,6 @@
 
 script('fbsync', 'login');
 style('fbsync', 'fbsync');
-
 ?>
 
 <div id="app" class="fbsync">

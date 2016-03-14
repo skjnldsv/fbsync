@@ -2,16 +2,16 @@
 <info>
     <id>fbsync</id>
     <name>Fb Sync</name>
-    <description>A Facebook info sync for owncloud contacts</description>
+    <description>A Facebook data syncing tool for your owncloud contacts</description>
     <licence>AGPL</licence>
     <author>NOIJN</author>
-    <version>1.7.3</version>
+    <version>1.8-beta</version>
     <namespace>FbSync</namespace>
     <category>other</category>
-    <require>8</require>
 	<dependencies>
-		<owncloud min-version="8.1" />
+        <owncloud min-version="9.0" max-version="9.1" />
 	</dependencies>
+    <ocsid>174311</ocsid>
 	<documentation>
 		<user>https://github.com/skjnldsv/Owncloud-FBSync</user>
 	</documentation>

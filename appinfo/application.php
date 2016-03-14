@@ -11,15 +11,17 @@
  
 namespace OCA\FbSync\AppInfo;
 
-use \OC\AppFramework\Utility\SimpleContainer;
-use \OCP\AppFramework\App;
-use \OCP\Share;
-use \OCP\IContainer;
-use \OCP\AppFramework\IAppContainer;
-use \OCA\FbSync\App\Contacts;
-use \OCA\FbSync\Controller\PageController;
-use \OCA\FbSync\Controller\FacebookController;
-use \OCP\IRequest;
+use OC\AppFramework\Utility\SimpleContainer;
+use OCP\AppFramework\App;
+use OCP\Share;
+use OCP\IContainer;
+use OCP\AppFramework\IAppContainer;
+use OCA\FbSync\App\Contacts;
+use OCA\FbSync\Controller\PageController;
+use OCA\FbSync\Controller\FacebookController;
+use OCA\FbSync\Controller\ContactsController;
+use OCP\IRequest;
+use OCA\DAV\CardDAV\CardDavBackend;
 
 class Application extends App {
 	
@@ -30,16 +32,6 @@ class Application extends App {
 	static $appname = 'fbsync';
 	public $user;
 	
-	// No PHOTO in $ContactsProbTable
-	public static $index_properties = array('BDAY', 'UID', 'N', 'FN', 'TITLE', 'ROLE', 'NOTE', 'NICKNAME', 'ORG',
-											'CATEGORIES', 'EMAIL', 'TEL', 'IMPP', 'ADR', 'URL', 'GEO', 'CLOUD', 'FBID');
-	// From contacts+
-	static $ContactsTable;
-	static $AddrBookTable;
-	static $ContactsProbTable;
-	static $ShareAddressBook;
-	static $ShareAddressBookPREFIX;
-	static $contactPlus=false;
 	const MAXPICTURESIZE = 720; // Fix for too big vcards not getting properly synced
 	const JAROWINKLERMAX = 85;  // Percent for Jaro-Winkler match tolerance
 	
@@ -47,6 +39,11 @@ class Application extends App {
 		
 		parent::__construct(self::$appname, $urlParams);
         $container = $this->getContainer();
+		
+		// Add the FBID field
+		CardDavBackend::$indexProperties[]='FBID';
+		
+		// Fix for userID
 		if(!$user) {
 			$this->user = \OCP\User::getUser();
 		} else {
@@ -54,21 +51,18 @@ class Application extends App {
 		}
 		
 		
-		// Contact+ compatibility
-		if(\OCP\App::isEnabled('contactsplus')) {
-			self::$ContactsTable = '*PREFIX*conplus_cards';
-			self::$AddrBookTable = '*PREFIX*conplus_addressbooks';
-			self::$ContactsProbTable = '*PREFIX*conplus_cards_properties';
-			self::$ShareAddressBook = 'cpladdrbook';
-			self::$ShareAddressBookPREFIX = '';
-			self::$contactPlus=true;
-		} else {
-			self::$ContactsTable = '*PREFIX*contacts_cards';
-			self::$AddrBookTable = '*PREFIX*contacts_addressbooks';
-			self::$ContactsProbTable = '*PREFIX*contacts_cards_properties';
-			self::$ShareAddressBook = 'addressbook';
-			self::$ShareAddressBookPREFIX = '';
-		}
+		/**
+		 * CardDavBackend
+		 */
+		$container->registerService('CardDavBackend', function(IContainer $c) {
+			$db = $c->getServer()->getDatabaseConnection();
+			$dispatcher = $c->getServer()->getEventDispatcher();
+			$principal = new \OCA\DAV\Connector\Sabre\Principal(
+				$c->getServer()->getUserManager(),
+				$c->getServer()->getGroupManager()
+			);
+			return new CardDavBackend($db, $principal, $dispatcher);
+		});
 		 
 		/**
 		 * User home folder
@@ -97,7 +91,9 @@ class Application extends App {
 		 */
 		$container->registerService('Contacts', function(IContainer $c) {
 			return new Contacts(
-				$c->query('FacebookController')
+				$c->query('FacebookController'),
+				$c->query('CardDavBackend'),
+				$this->user
 			);
 		});
 		
@@ -112,8 +108,18 @@ class Application extends App {
 				$c->query('FacebookController')
 			);
 		});
-
-
+		
+		/**
+		 * ContactsController
+		 */
+		$container->registerService('ContactsController', function(IContainer $c) {
+			return new ContactsController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query('Contacts')
+			);
+		});
+		
 	}
   
    

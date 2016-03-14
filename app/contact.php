@@ -15,7 +15,6 @@ use OCP\Image;
 use OCA\FbSync\Controller\FacebookController;
 use Sabre\VObject;
 use OCA\FbSync\AppInfo\Application as App;
-use OCA\FbSync\VCard;
 use OCA\FbSync\JaroWinkler;
 
 /**
@@ -28,17 +27,29 @@ class Contact {
 	 */
 	public $fbController;
 	/**
+	 * @var Backend
+	 */
+	public $backend;
+	/**
 	 * @var integer
 	 */
 	public $id;
 	/**
 	 * @var string
 	 */
-	public $addressbook;
+	public $uri;
 	/**
 	 * @var string
 	 */
 	public $lastmodified;
+	/**
+	 * @var string
+	 */
+	public $etag;
+	/**
+	 * @var string
+	 */
+	public $addressbook;
 	/**
 	 * @var VObject
 	 */
@@ -48,22 +59,26 @@ class Contact {
 	* Construct
 	* @var FacebookController The facebook controller instance
 	* @var integer The contact local id 
-	* @var string The adressbook backend (usually "local")
 	* @var intstringeger The last edit time
 	* @var VObject The vcard data
 	*/
 	public function __construct(
 		FacebookController $fbController,
+		$backend,
 		$id,
-		$addressbook,
+		$uri,
 		$lastmodified,
+		$etag,
+		$addressbook,
 		$vcard
 	) {
 		$this->fbController = $fbController;
+		$this->backend = $backend;
 		$this->id = $id;
-		$this->addressbook = $addressbook;
+		$this->uri = $uri;
 		$this->lastmodified = $lastmodified;
-		$this->backend = 'local';
+		$this->etag = $etag;
+		$this->addressbook = $addressbook;
 		$this->vcard = $vcard;
 	}
     
@@ -88,22 +103,20 @@ class Contact {
 						"error" => "Image unreachable",
 						"id" => $this->id,
 						"name" => $this->getName(),
-						"backend" => $this->backend,
 						"addressbook" => $this->addressbook,
 						"img" => $imgAltUrl,
 						"photo" => isset($this->vcard->PHOTO),
-						"photourl" => $this->getPhotoUrl()
+						"photourl" => $this->getPhoto(100)
 					);
 				} else if($imgAltUrl == "notfound") {
 					return Array(
 						"error" => "Wrong FBID, User not found",
 						"id" => $this->id,
 						"name" => $this->getName(),
-						"backend" => $this->backend,
 						"addressbook" => $this->addressbook,
 						"img" => $imgAltUrl,
 						"photo" => isset($this->vcard->PHOTO),
-						"photourl" => $this->getPhotoUrl()
+						"photourl" => $this->getPhoto(100)
 					);
 				} else {
 					$imgAlt = file_get_contents($imgAltUrl);
@@ -115,11 +128,10 @@ class Contact {
 							"error" => "Image too small",
 							"id" => $this->id,
 							"name" => $this->getName(),
-							"backend" => $this->backend,
 							"addressbook" => $this->addressbook,
 							"img" => $imgAltUrl,
 							"photo" => isset($this->vcard->PHOTO),
-							"photourl" => $this->getPhotoUrl()
+							"photourl" => $this->getPhoto(100)
 						);
 					}
 				}
@@ -140,10 +152,9 @@ class Contact {
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
-				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
-				"photourl" => $this->getPhotoUrl(),
+				"photourl" => $this->getPhoto(100),
 				"alt_method" => isset($imgAltUrl)?$imgAltUrl:false
 			);
 		}
@@ -161,10 +172,9 @@ class Contact {
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
-				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
-				"photourl" => $this->getPhotoUrl()
+				"photourl" => $this->getPhoto(100)
 			);
 		} else if(isset($this->vcard->BDAY)) {
 			return Array(
@@ -172,10 +182,9 @@ class Contact {
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
-				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
-				"photourl" => $this->getPhotoUrl(),
+				"photourl" => $this->getPhoto(100),
 				"birthday" => true
 			);
 		}
@@ -187,10 +196,9 @@ class Contact {
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
-				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
-				"photourl" => $this->getPhotoUrl()
+				"photourl" => $this->getPhoto(100)
 			);
 		} else {
 			$birthday = date('Y-m-d', strtotime($birthday));
@@ -201,10 +209,9 @@ class Contact {
 				"id" => $this->id,
 				"name" => $this->getName(),
 				"name" => $this->getName(),
-				"backend" => $this->backend,
 				"addressbook" => $this->addressbook,
 				"photo" => isset($this->vcard->PHOTO),
-				"photourl" => $this->getPhotoUrl(),
+				"photourl" => $this->getPhoto(100),
 				"birthday" => $birthday
 			);
 		}
@@ -234,37 +241,23 @@ class Contact {
 	}
 	
 	/**
-	 * Get photo URL
-	 */
-	public function getPhotoUrl($size=false) {
-		if(App::$contactPlus) {
-			$photo = "/index.php/apps/contactsplus/getcontactphoto/".$this->id;						 	
-		} else {
-
-			$photo = "/index.php/apps/contacts/addressbook/".
-				$this->backend."/".
-				$this->addressbook."/contact/".
-				$this->id."/photo";
-		}
-		return $photo;
-	}
-	
-	/**
-	 * Get photo URL
+	 * Get contact photo
 	 */
 	public function getPhoto($size=40) {
-		$image = new Image($this->vcard->PHOTO);
-		$image->resize($size);
-//		return base64_encode($this->vcard->PHOTO);
-		return 'data:'.$image->mimeType().';base64,'.$image->__toString();
+		if(!isset($this->vcard->PHOTO)) {
+			return false;
+		} else {
+			$image = new Image(base64_encode((string)$this->vcard->PHOTO));
+			$image->resize($size);
+			return 'data:'.$image->mimeType().';base64,'.$image->__toString();
+		}
 	}
 	
 	/**
 	 * Set FBID
 	 */
 	private function save() {
-		Vcard::updateDBProperties($this->id, $this->vcard);
-		return VCard::edit($this->id, $this->vcard);
+		return $this->backend->updateCard($this->addressbook, $this->uri, $this->vcard->serialize());
 	}
 	
 	/**

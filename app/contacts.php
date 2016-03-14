@@ -11,12 +11,11 @@
 
 namespace OCA\FbSync\App;
 
-use \OCA\FbSync\App\Contact;
-use \OCA\FbSync\Controller\FacebookController;
-use \OCA\FbSync\VCard;
-use \OCA\FbSync\Addressbook;
+use OCA\FbSync\App\Contact;
+use OCA\FbSync\Controller\FacebookController;
 use Sabre\VObject;
-use \OCA\FbSync\AppInfo\Application as App;
+use OCA\DAV\CardDAV\CardDavBackend;
+use OCA\FbSync\AppInfo\Application as App;
 
 /**
  * Class Contacts
@@ -27,9 +26,21 @@ class Contacts {
 	 * @var FacebookController
 	 */
 	private $fbController;
+
+	/**
+	 * @var CardDavBackend
+	 */
+	private $backend;
+
+	/**
+	 * @var String
+	 */
+	private $userUID;
     
-	public function __construct(FacebookController $fbController) {
+	public function __construct(FacebookController $fbController, CardDavBackend $backend, $user) {
 		$this->fbController = $fbController;
+		$this->backend = $backend;
+		$this->userUID = $user;
 	}
 	
 	/**
@@ -40,19 +51,33 @@ class Contacts {
 	}
     
 	/**
+	 * Retrieves the user addressbooks IDs
+	 */
+	private function getAddressBooksIDsForUser() {
+		$activeAddressbooksArray = $this->backend->getAddressBooksForUser('principals/users/' . $this->userUID);
+		foreach ($activeAddressbooksArray as $activeAddressbook) {
+			$activeAddressbooks[] = $activeAddressbook['id'];
+		}
+		return $activeAddressbooks;
+	}
+    
+	/**
 	 * Retrieves all contacts from the ContactsManager and parse them to a
 	 * usable format.
 	 */
 	public function getList(){
-		$activeAddressbooks = Addressbook::activeIds();
+		$activeAddressbooks = $this->getAddressBooksIDsForUser();
 		$contacts = Array();
 		foreach($activeAddressbooks as $activeAddressbook) {
-			foreach(VCard::all($activeAddressbook) as $contact) {
+			foreach($this->backend->getCards($activeAddressbook) as $contact) {
 				$contacts[$contact['id']] = new Contact(
 					$this->fbController,
+					$this->backend,
 					$contact['id'],
-					$contact['addressbookid'],
+					$contact['uri'],
 					$contact['lastmodified'],
+					$contact['etag'],
+					$activeAddressbook,
 					VObject\Reader::read($contact["carddata"])
 				);
 			}
@@ -61,26 +86,37 @@ class Contacts {
 		return $contacts;
 	}
     
+	
+	public function getCards() {
+		return $this->backend->getCards(1);
+	}
 	/**
 	 * Retrieves a single contact from the ContactsManager and parse
 	 * them to a usable format
+	 * TODO Could be a problem if too many contacts.
 	 * @return array 
 	 */
 	public function getContact($id){
-		$contact = VCard::find($id);
-		$activeAddressbooks=Addressbook::activeIds();
-		// Do you have the right to get this contact?
-		if(in_array($contact['addressbookid'], $activeAddressbooks)) {
-			return new Contact(
-				$this->fbController,
-				$contact['id'],
-				$contact['addressbookid'],
-				$contact['lastmodified'],
-				VObject\Reader::read($contact["carddata"])
-			);
-		} else {
-			return false;
+		$activeAddressbooks = $this->getAddressBooksIDsForUser();
+		foreach($activeAddressbooks as $activeAddressbook) {
+			
+			$contact = $this->backend->getCard($activeAddressbook, $this->backend->getCardUri($id));
+			
+			if($contact != null) {
+				return new Contact(
+					$this->fbController,
+					$this->backend,
+					$contact['id'],
+					$contact['uri'],
+					$contact['lastmodified'],
+					$contact['etag'],
+					$activeAddressbook,
+					VObject\Reader::read($contact["carddata"])
+				);
+			}
 		}
+		
+		return false;
 	}
 	
 	/**
@@ -171,7 +207,7 @@ class Contacts {
 		if(!$contact) {
 			return false;
 		}
-		return $contact->getPhotoUrl($size);
+		return $contact->getPhoto($size);
 	}
 	
 	/**

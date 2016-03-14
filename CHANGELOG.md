@@ -1,3 +1,14 @@
+1.8:
+ - OC9 compatibility
+ - Fix unwanted error in log (fix #21)
+ - Changed the way fbsync retrieve the pictures (oc9)
+ - NO COMPATIBLE with contact+ in oc9 (not updated)
+ - Updated data output guidelines
+ - Global cleanup
+
+1.7.4:
+ - Fix for 32bits systems (bug #15)
+ 
 1.7.3:
  - Bug with last oc update fix
  - Bug with profile pictures (fix #12)

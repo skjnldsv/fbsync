@@ -12,7 +12,6 @@ use OCA\FbSync\AppInfo\Application as App;
 
 script('fbsync', 'login');
 script('fbsync', 'match');
-script('contacts', 'storage');
 style('fbsync', 'fbsync');
 
 // Cache ckeck before list
@@ -20,6 +19,7 @@ $fromCache = $_['facebook']->fromCache();
 // Contacts & friends lists
 $contacts = $_['contacts'];
 $friends = $_['facebook']->getfriends();
+
 ?>
 
 <div id="app" class="fbsync">
@@ -56,9 +56,9 @@ $friends = $_['facebook']->getfriends();
 				<button class="controls_item tooltipped-bottom" id="fbstatus" title="Click to reload the friends cache">
 					<?php
 					if($fromCache) {
-						echo count($friends)." friends loaded from cache";
+						p(count($friends)." friends loaded from cache");
 					} else {
-						echo count($friends)." friends found and cached";
+						p(count($friends)." friends found and cached");
 					}
 					?>
 				</button>
@@ -78,8 +78,9 @@ $friends = $_['facebook']->getfriends();
 		<!-- Fake contact div to load the contact svg before the contacts pictures -->
 		<div style="url('/apps/fbsync/img/contact.svg'), url('/apps/fbsync/img/loading.svg');"></div>
 		
-		<div id="contacts-list" style="display:none" data-friends="<?=count($friends) ?>" data-contacts="<?=count($contacts) ?>">
+		<div id="contacts-list" style="display:none" data-friends="<? p(count($friends)); ?>" data-contacts="<? p(count($contacts)); ?>">
 			<?php
+					
 			foreach($contacts as $contact) {
 				if($contact->addressbook != "") {
 					// Main div
@@ -102,8 +103,7 @@ $friends = $_['facebook']->getfriends();
 					// PHOTO
 					echo '<div class="photo';
 					if(isset($contact->vcard->PHOTO)) {
-//						echo '"><img src="'.$contact->getPhoto().'" height="40" width="40" />';
-						echo '"><img src="'.$contact->getPhotoUrl(60).'" height="60" width="60" />';
+						echo '"><img src="'.$contact->getPhoto(60).'" height="60" width="60" />';
 					} else {
 						echo ' nophoto">';
 					}

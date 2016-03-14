@@ -177,7 +177,7 @@ class FacebookController extends Controller {
 					$re = "/uid=([0-9]{1,20})/";
 					preg_match($re, $friend->href, $matches);
 					// $friends[fbid]=name
-					$friends[(int)$matches[1]]=html_entity_decode($friend->innertext, ENT_QUOTES);
+					$friends[$matches[1]]=html_entity_decode($friend->innertext, ENT_QUOTES);
 				}
 				$page++;
 
@@ -326,7 +326,7 @@ class FacebookController extends Controller {
 	 */
 	public function islogged() {
 		// No cookie set, we don't need to go further
-		if(filesize($this->userHome.$this->cookieName) == 0) {
+		if(!file_exists($this->userHome.$this->cookieName)) {
 			return false;
 		}
 		// Check if redirected to the login page
