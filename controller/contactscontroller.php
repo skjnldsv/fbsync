@@ -11,11 +11,11 @@
 
 namespace OCA\FbSync\Controller;
 
-use \OCP\AppFramework\Controller;
-use \OCP\IRequest;
-use \OCP\AppFramework\Http\JSONResponse;
-use \OCP\AppFramework\Http\TemplateResponse;
-use \OCA\FbSync\App\Contacts;
+use OCP\AppFramework\Controller;
+use OCP\IRequest;
+use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCA\FbSync\App\Contacts;
 
 class ContactsController extends Controller {
 

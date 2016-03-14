@@ -11,12 +11,12 @@
 
 namespace OCA\FbSync\Controller;
 
-use \OCP\IRequest;
-use \OCP\AppFramework\Http\TemplateResponse;
-use \OCP\AppFramework\Controller;
-use \OCP\AppFramework\App;
-use \OCA\FbSync\App\Contacts;
-use \OCA\FbSync\Controller\FacebookController;
+use OCP\IRequest;
+use OCP\AppFramework\Http\TemplateResponse;
+use OCP\AppFramework\Controller;
+use OCP\AppFramework\App;
+use OCA\FbSync\App\Contacts;
+use OCA\FbSync\Controller\FacebookController;
 
 
 class PageController extends Controller {

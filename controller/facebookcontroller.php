@@ -11,10 +11,10 @@
 
 namespace OCA\FbSync\Controller;
 
-use \OCP\IRequest;
-use \OCP\AppFramework\Controller;
-use \OCP\IUser;
-use \OCP\ICache;
+use OCP\IRequest;
+use OCP\AppFramework\Controller;
+use OCP\IUser;
+use OCP\ICache;
 use OCA\FbSync\AppInfo\Application as App;
 require("simple_html_dom.php");
 
