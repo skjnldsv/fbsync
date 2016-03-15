@@ -234,6 +234,17 @@ class Contact {
 	}
 	
 	/**
+	 * set Birthday
+	 */
+	public function updateorsetBirthday($timestamp){
+		if(isset($this->vcard->BDAY)) {
+			unset($this->vcard->BDAY);
+		}
+		$this->vcard->add('BDAY', $timestamp);
+		return $this->save();
+	}
+	
+	/**
 	 * Set FBID
 	 */
 	public function setFBID($fbid) {

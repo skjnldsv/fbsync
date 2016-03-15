@@ -1,3 +1,6 @@
+1.8.1:
+ - Added secondary way to get birthdays (no langage change but no correct year)
+
 1.8:
  - OC9 compatibility & OC8 depreciation
  - Fix unwanted error in log (fix #21)

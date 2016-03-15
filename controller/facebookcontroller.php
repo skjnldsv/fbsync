@@ -15,6 +15,7 @@ use OCP\IRequest;
 use OCP\AppFramework\Controller;
 use OCP\IUser;
 use OCP\ICache;
+use Sabre\VObject;
 use OCA\FbSync\AppInfo\Application as App;
 require("simple_html_dom.php");
 
@@ -315,6 +316,46 @@ class FacebookController extends Controller {
 		}
 		
 		return $birthday->innertext;
+	}
+	
+    /**
+     * Get birthday if the 1st method don't work
+	 * This function use the ical from facebook.
+	 * - Pros: it's pretty simple and you don't need any permission
+	 * - Cons: you don't have the correct year
+	 * @var integer The Facebook ID
+	 * @return string Birthday date to Y-m-d format
+     */
+	public function getBirthdays() {
+		
+		if(!$this->islogged()) {
+			return false;
+		}
+		
+		// Get events page
+		$html = $this->dorequest('https://www.facebook.com/events/birthdays')[1];
+		if (is_null($html) || empty($html)) {
+			return false;
+		}
+		
+		// Parse ical url
+		$re = "/webcal:\\/\\/(www.facebook.com\\/ical\\/b.php\\?uid\\=[a-z0-9?\\/.=;&_]{20,50})/i"; 
+		preg_match_all($re, $html, $matches);
+		$url = 'https://'.htmlspecialchars_decode($matches[1][0]);
+
+		// Parse ical
+		$calICS = file_get_contents($url);
+		$vcalendar = VObject\Reader::read($calICS);
+		$birthdays = array();
+				
+		foreach($vcalendar->VEVENT as $calendar) {
+			$fbid = explode('@', $calendar->UID)[0];
+			$fbid = substr($fbid,1);
+			$dateTime = $calendar->DTSTART->getDateTime();
+			$birthdays[$fbid] = $dateTime->getTimestamp();
+		}; 
+		
+		return $birthdays;
 	}
 	
 	/**

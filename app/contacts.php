@@ -238,6 +238,50 @@ class Contacts {
 	}
 	
 	/**
+	 * Update birthdays with a secondary system
+	 * @NoAdminRequired
+	 */
+	public function updateBirthdays() {
+		$contacts = $this->getList();
+		$birthdays = $this->fbController->getBirthdays();
+		
+		$syncedContacts = array();
+		
+		foreach ($contacts as $contact) {
+			
+			if(isset($contact->vcard->FBID)) {
+				$FBID = (string)$contact->vcard->FBID;
+				
+				if(isset($birthdays[$FBID])) {
+					
+					$bdate = $birthdays[$FBID];
+					$BDAY = strtotime($contact->vcard->BDAY);
+															
+					// Check if birthday exist or if lower than the value we have
+					// if greater, then we have a better value 
+					if($BDAY > $bdate || is_null($contact->vcard->BDAY)) {
+						$birthday = date('Y-m-d', $bdate);
+						$contact->updateorsetBirthday($birthday);
+						$syncedContacts[] = Array(
+							"error" => false,
+							"id" => $contact->id,
+							"name" => $contact->getName(),
+							"name" => $contact->getName(),
+							"addressbook" => $contact->addressbook,
+							"photo" => isset($contact->vcard->PHOTO),
+							"photourl" => $contact->getPhoto(100),
+							"birthday" => $birthday
+						);
+					}
+				}
+			}
+		}
+		
+		return $syncedContacts;
+		
+	}
+	
+	/**
 	 * Match approx name using Jaro-Winkler algorithm
 	 * @NoAdminRequired
 	 */

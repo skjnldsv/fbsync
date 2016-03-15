@@ -135,6 +135,43 @@ function syncBirthdays() {
 	})
 }
 
+function syncBirthdaysAlt() {
+	
+	$('#loader').fadeIn();
+	
+	var synced = 0;
+	$.get(OC.generateUrl('apps/fbsync/setBirthdayAlt'))
+	.done(function(response) {
+		if(response.length>0) {
+			
+			response.forEach(function(contact, index, array){
+				var contactdivStart = '<div class="sync-contact tooltipped" title="'+contact['name'];
+				if(contact['photo'] == true) {
+					var contactdivEnd = '"><img src="'+contact['photourl']+'" height="100" width="100" /></div>';
+				} else {
+					var contactdivEnd = '"></div>';
+				}
+
+				synced++;
+				$('#sync-success > .sync-results').append(contactdivStart+': '+contact['birthday']+contactdivEnd);
+
+				// Status
+				$('.tooltipped').tipsy();
+				isDoneSyncing(synced, 0, 0, response.length, "#syncbdayalt");
+			})
+			
+		} else {
+			
+		}
+		
+	}).fail(function() {
+			
+		error++;
+		isDoneSyncing(0, 1, 0, 1, "#syncbdayalt");
+			
+	});
+}
+
 
 (function ($, OC) {
     
@@ -178,6 +215,18 @@ function syncBirthdays() {
 			// Empty previous sync data
 			$('.sync-results').empty();
 			syncBirthdays();
+		})
+		$("#syncbdayalt").click(function() {
+			if (confirm("This secondary button uses the facebook calendar to get the desired data. It's useful if you don't want to change your facebook langage to get the first method working or if the 1 button is failing. Please remember that the saved year won't be correct.")) {
+				// Fix for tooltip on disabled buttons
+				$('.tooltip').fadeOut();
+				// Save and set new text
+				$("#syncbdayalt").data('text', $("#syncbdayalt").text()).text('Loading...').addClass('loading');
+				$(".syncbutton").prop('disabled',true);
+				// Empty previous sync data
+				$('.sync-results').empty();
+				syncBirthdaysAlt();
+			}
 		})
 		$("#delpictures").click(function() {
 			if (confirm("Are you sure ?!")) {

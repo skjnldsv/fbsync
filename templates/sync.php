@@ -29,10 +29,16 @@ style('fbsync', 'fbsync');
 						title="Will sync profile pictures for people matched with one of your facebook friend">
 					Sync pictures
 				</button>
-				<button id="syncbday" class="tooltipped-bottom syncbutton"
-						title="Will sync birthdays only for the contacts who doesn't have one set yet">
-					Sync birthdays
-				</button>
+				<span class="tooltipped-bottom joinedbuttons"
+					  title="Will sync birthdays for the contacts who doesn't have one set or if the already
+							 defined date is older than the date we have">
+					<button id="syncbday" class="syncbutton">
+						Sync birthdays&nbsp;&nbsp;&nbsp;1
+					</button>
+					<button id="syncbdayalt" class="syncbutton">
+						2
+					</button>
+				</span>
 				<button id="delpictures" class="tooltipped-bottom syncbutton"
 						title="WARNING! Will remove all the profiles pictures on your selected addressbook(s)">
 					Remove all pictures

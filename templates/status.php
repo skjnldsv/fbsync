@@ -37,7 +37,8 @@ style('fbsync', 'fbsync');
 			</div>
 			<div id="warning2" class="intro-info">
 				If you want to sync your birthdays, <u>switch your facebook to English first</u>!<br />
-				It's a limitation I can't avoid because we don't use their API! :(
+				It's a limitation I can't avoid because we don't use their API! :(<br />
+				If you don't want to, you can use the secondary method. Unfortunately, the year won't be correct, but the date will. 
 			</div>
 			<div id="login" class="intro-info">
 				<b>First!</b> Login here!

@@ -149,6 +149,20 @@
     justify-content: space-between;
 	width: auto;
 }
+#controls .joinedbuttons {
+	display: inline-block;
+}
+#controls .joinedbuttons > button:first-child {
+    border-radius: 3px 0 0 3px;
+    margin-right: 0;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    display: block;
+    float: left;
+}
+#controls .joinedbuttons > button:last-child {
+    border-radius: 0 3px 3px 0;
+    margin-left: 0;
+}
 #controls .button, 
 #controls button {
 	height: auto;
