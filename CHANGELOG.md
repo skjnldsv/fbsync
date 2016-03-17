@@ -1,3 +1,6 @@
+1.8.2:
+ - Changed name FBsync (fix #24)
+ 
 1.8.1:
  - Added secondary way to get birthdays (no langage change but no correct year)
 
