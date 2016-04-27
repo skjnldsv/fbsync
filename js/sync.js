@@ -217,7 +217,7 @@ function syncBirthdaysAlt() {
 			syncBirthdays();
 		})
 		$("#syncbdayalt").click(function() {
-			if (confirm("This secondary button uses the facebook calendar to get the desired data. It's useful if you don't want to change your facebook langage to get the first method working or if the 1 button is failing. Please remember that the saved year won't be correct.")) {
+			if (confirm("This secondary button uses the facebook calendar to get the desired data. It's useful if you don't want to change your facebook language to get the first method working or if the 1 button is failing. Please remember that the saved year won't be correct.")) {
 				// Fix for tooltip on disabled buttons
 				$('.tooltip').fadeOut();
 				// Save and set new text
