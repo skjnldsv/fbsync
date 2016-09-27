@@ -31,7 +31,7 @@ style('fbsync', 'fbsync');
 				</button>
 				<span class="tooltipped-bottom joinedbuttons"
 					  title="Will sync birthdays for the contacts who doesn't have one set or if the already
-							 defined date is older than the date we have">
+							 defined date is older than the date we find">
 					<button id="syncbday" class="syncbutton">
 						Sync birthdays&nbsp;&nbsp;&nbsp;1
 					</button>
