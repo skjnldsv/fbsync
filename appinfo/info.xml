@@ -1,18 +1,30 @@
 <?xml version="1.0"?>
-<info>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>fbsync</id>
-    <name>Fb Sync</name>
-    <description>A Facebook data syncing tool for your owncloud contacts</description>
-    <licence>AGPL</licence>
-    <author>NOIJN</author>
-    <version>1.8.2</version>
+    <name>FbSync</name>
+    <summary lang="en">A Facebook data syncing tool for your contacts</summary>
+    <description>This application use some shady functions to match and sync your contacts with your friends. It provides an unique way to get and process your facebook data by overriding the facebook api. You don't need to have the graph api enabled for this app to work.</description>
+    <licence>agpl</licence>
+    <author mail="fremulon@protonmail.com">John Molakvoæ</author>
+    <version>1.8.3</version>
     <namespace>FbSync</namespace>
-    <category>other</category>
-	<dependencies>
-        <owncloud min-version="9.0" max-version="9.1" />
-	</dependencies>
+    <category>social</category>
+    <category>tools</category>
+    <dependencies>
+        <lib>curl</lib>
+        <!-- owncloud tag is required on Nextcloud 9, 10 and 11 -->
+        <owncloud min-version="9.0" max-version="9.1"/>
+        <nextcloud min-version="9" max-version="10"/>
+    </dependencies>
     <ocsid>174311</ocsid>
-	<documentation>
-		<user>https://github.com/skjnldsv/Owncloud-FBSync</user>
-	</documentation>
+    <website>https://github.com/skjnldsv/Owncloud-FBSync</website>
+    <repository>https://github.com/skjnldsv/Owncloud-FBSync</repository>
+    <documentation>
+        <user>https://github.com/skjnldsv/Owncloud-FBSync</user>
+    </documentation>
+    <screenshot>https://raw.githubusercontent.com/skjnldsv/Owncloud-FBSync/master/screenshot-1.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/skjnldsv/Owncloud-FBSync/master/screenshot-2.png</screenshot>
+    <screenshot>https://raw.githubusercontent.com/skjnldsv/Owncloud-FBSync/master/screenshot-3.png</screenshot>
+    <bugs>https://github.com/skjnldsv/Owncloud-FBSync/issues</bugs>
 </info>
