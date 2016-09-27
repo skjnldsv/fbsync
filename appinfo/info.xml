@@ -17,7 +17,6 @@
         <owncloud min-version="9.0" max-version="9.1"/>
         <nextcloud min-version="9" max-version="10"/>
     </dependencies>
-    <ocsid>174311</ocsid>
     <website>https://github.com/skjnldsv/Owncloud-FBSync</website>
     <repository>https://github.com/skjnldsv/Owncloud-FBSync</repository>
     <documentation>
