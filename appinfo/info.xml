@@ -3,19 +3,18 @@
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
     <id>fbsync</id>
     <name>FbSync</name>
-    <summary lang="en">A Facebook data syncing tool for your contacts</summary>
-    <description>This application use some shady functions to match and sync your contacts with your friends. It provides an unique way to get and process your facebook data by overriding the facebook api. You don't need to have the graph api enabled for this app to work.</description>
+    <summary>A Facebook data syncing tool for your contacts</summary>
+    <description><![CDATA[This application use some shady functions to match and sync your contacts with your friends.
+It provides an unique way to get and process your facebook data by overriding the facebook api. You **don&#39;t** need to have the graph api enabled for this app to work.]]></description>
     <licence>agpl</licence>
     <author mail="skjnldsv@protonmail.com">John Molakvoæ</author>
-    <version>1.8.3</version>
+    <version>1.8.4</version>
     <namespace>FbSync</namespace>
     <category>social</category>
     <category>tools</category>
     <dependencies>
-        <lib>curl</lib>
-        <!-- owncloud tag is required on Nextcloud 9, 10 and 11 -->
-        <owncloud min-version="9.0" max-version="9.1"/>
-        <nextcloud min-version="9" max-version="12"/>
+        <owncloud min-version="9.2"/>
+        <nextcloud min-version="11" max-version="11"/>
     </dependencies>
     <website>https://github.com/skjnldsv/fbsync</website>
     <repository>https://github.com/skjnldsv/fbsync</repository>

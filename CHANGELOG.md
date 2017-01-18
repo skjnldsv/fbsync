@@ -1,3 +1,6 @@
+1.8.3:
+ - Updated various infos and migrate to Nextcloud
+
 1.8.2:
  - Changed name FBsync (fix #24)
  
