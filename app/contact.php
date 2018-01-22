@@ -89,7 +89,8 @@ class Contact {
 		if(isset($this->vcard->FBID)) {
 			$img = file_get_contents("https://graph.facebook.com/".$this->getFBID()."/picture?height=1000");
 
-			$image = new Image(base64_encode($img));
+			$image = new Image();
+			$image->loadFromBase64(base64_encode($img));
 			// Center auto crop!!
 			$image->centerCrop();
 
@@ -120,7 +121,8 @@ class Contact {
 					);
 				} else {
 					$imgAlt = file_get_contents($imgAltUrl);
-					$image = new Image(base64_encode($imgAlt));
+					$image = new Image();
+					$image->loadFromBase64(base64_encode($imgAlt));
 					// Center auto crop!!
 					$image->centerCrop();
 					if($image->height()<100 || $image->width()<100) {
@@ -258,7 +260,8 @@ class Contact {
 		if(!isset($this->vcard->PHOTO)) {
 			return false;
 		} else {
-			$image = new Image(base64_encode((string)$this->vcard->PHOTO));
+			$image = new Image();
+			$image->loadFromBase64(base64_encode((string)$this->vcard->PHOTO));
 			$image->resize($size);
 			return 'data:'.$image->mimeType().';base64,'.$image->__toString();
 		}
