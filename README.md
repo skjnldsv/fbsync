@@ -1,3 +1,10 @@
+THIS APPLICATION IS NOW ARCHIVED
+I may work on a new one later on, but this is far from being my top priority. Despite the fact that I also miss such functionnality into nextcloud, this app was more like a funny hack to do than a real stable project. :)
+
+Feel free to frk and update!
+
+----
+
 # FbSync
 Place this app in **nextcloud/apps/**
 
